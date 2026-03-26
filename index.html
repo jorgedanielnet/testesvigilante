@@ -111,6 +111,31 @@
             flex-wrap: wrap;
         }
 
+        .etiquetas {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .etiqueta {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .etiqueta-modulo {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .etiqueta-origem {
+            background: #ede9fe;
+            color: #6d28d9;
+        }
+
         .pergunta-caixa {
             font-size: 1.25rem;
             margin-bottom: 25px;
@@ -213,28 +238,33 @@
         <div class="secao-grupo">
             <div class="titulo-grupo">BAS — Formação Base</div>
             <div id="lista-bas" class="grelha-modulos"></div>
-            <button class="btn-grupo" onclick="iniciarQuiz('GRUPO_BAS')">SIMULADO BAS</button>
+            <button class="btn-grupo" onclick="iniciarQuiz('GRUPO_BAS')">SIMULADO BAS (20)</button>
         </div>
 
         <div class="secao-grupo">
             <div class="titulo-grupo">VIG — Vigilante</div>
             <div id="lista-vig" class="grelha-modulos"></div>
-            <button class="btn-grupo" onclick="iniciarQuiz('GRUPO_VIG')">SIMULADO VIG</button>
+            <button class="btn-grupo" onclick="iniciarQuiz('GRUPO_VIG')">SIMULADO VIG (20)</button>
         </div>
 
         <div class="secao-grupo">
             <div class="titulo-grupo">ALM — Alarmista</div>
             <div id="lista-alm" class="grelha-modulos"></div>
-            <button class="btn-grupo" onclick="iniciarQuiz('GRUPO_ALM')">SIMULADO ALM</button>
+            <button class="btn-grupo" onclick="iniciarQuiz('GRUPO_ALM')">SIMULADO ALM (20)</button>
         </div>
 
-        <button class="btn-total" onclick="iniciarQuiz('TOTAL')">SIMULADO COMPLETO (TUDO)</button>
+        <button class="btn-total" onclick="iniciarQuiz('TOTAL')">SIMULADO COMPLETO (25)</button>
     </div>
 
     <div id="ecra-quiz" class="escondido">
         <div class="info-topo">
             <span id="txt-modulo"></span>
             <span id="txt-progresso"></span>
+        </div>
+
+        <div class="etiquetas">
+            <span id="etiqueta-modulo" class="etiqueta etiqueta-modulo"></span>
+            <span id="etiqueta-origem" class="etiqueta etiqueta-origem"></span>
         </div>
 
         <div id="txt-pergunta" class="pergunta-caixa"></div>
@@ -260,6 +290,10 @@
 
 <script>
     const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRdV0-Xyu-KXHc9wV_Lldd0qOfuQlHYmsMkfIYow5b9dxl-2BQzDMHNHoufXG7yh7a1dnLKCtFXwzMA/pub?gid=0&single=true&output=csv';
+
+    const LIMITE_MODULO = 10;
+    const LIMITE_GRUPO = 20;
+    const LIMITE_TOTAL = 25;
 
     let todasPerguntas = [];
     let perguntasAtuais = [];
@@ -332,8 +366,8 @@
 
     function ordenarModulos(lista) {
         return lista.sort((a, b) => {
-            const ma = a.match(/(\\D+)\\s*(\\d+)/);
-            const mb = b.match(/(\\D+)\\s*(\\d+)/);
+            const ma = a.match(/(\D+)\s*(\d+)/);
+            const mb = b.match(/(\D+)\s*(\d+)/);
 
             if (!ma || !mb) return a.localeCompare(b, 'pt');
 
@@ -345,6 +379,20 @@
             if (grupoA !== grupoB) return grupoA.localeCompare(grupoB, 'pt');
             return numA - numB;
         });
+    }
+
+    function baralhar(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    function limitarAleatorias(lista, limite) {
+        const copia = [...lista];
+        baralhar(copia);
+        return copia.slice(0, Math.min(limite, copia.length));
     }
 
     async function carregarDados() {
@@ -364,20 +412,22 @@
 
             const cabecalho = linhas[0].map(c => c.trim().toLowerCase());
             const idxModulo = cabecalho.indexOf('módulo') !== -1 ? cabecalho.indexOf('módulo') : cabecalho.indexOf('modulo');
+            const idxOrigem = cabecalho.indexOf('origem');
             const idxPergunta = cabecalho.indexOf('pergunta');
             const idxResposta = cabecalho.indexOf('resposta');
             const idxObs = cabecalho.indexOf('observação') !== -1 ? cabecalho.indexOf('observação') : cabecalho.indexOf('observacao');
 
-            if (idxModulo === -1 || idxPergunta === -1 || idxResposta === -1) {
-                throw new Error('O CSV não tem as colunas esperadas: Módulo, Pergunta e Resposta.');
+            if (idxModulo === -1 || idxOrigem === -1 || idxPergunta === -1 || idxResposta === -1) {
+                throw new Error('O CSV não tem as colunas esperadas: Módulo, Origem, Pergunta e Resposta.');
             }
 
             todasPerguntas = linhas.slice(1).map(colunas => ({
                 modulo: (colunas[idxModulo] || '').trim(),
+                origem: (colunas[idxOrigem] || '').trim(),
                 pergunta: (colunas[idxPergunta] || '').trim(),
                 resposta: (colunas[idxResposta] || '').trim(),
                 obs: idxObs !== -1 ? (colunas[idxObs] || '').trim() : ''
-            })).filter(p => p.modulo && p.pergunta && p.resposta);
+            })).filter(p => p.modulo && p.origem && p.pergunta && p.resposta);
 
             if (!todasPerguntas.length) {
                 throw new Error('Não foram encontradas perguntas válidas no CSV.');
@@ -405,7 +455,7 @@
         modulos.forEach(m => {
             const btn = document.createElement('button');
             btn.className = 'btn-modulo';
-            btn.innerText = m;
+            btn.innerText = `${m} (${Math.min(LIMITE_MODULO, todasPerguntas.filter(p => p.modulo === m).length)})`;
             btn.onclick = () => iniciarQuiz(m);
             container.appendChild(btn);
         });
@@ -428,28 +478,18 @@
         document.getElementById('ecra-resultado').classList.add('escondido');
     }
 
-    function baralhar(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
-        }
-        return array;
-    }
-
     function iniciarQuiz(tipo) {
         if (tipo === 'TOTAL') {
-            perguntasAtuais = [...todasPerguntas];
+            perguntasAtuais = limitarAleatorias(todasPerguntas, LIMITE_TOTAL);
         } else if (tipo === 'GRUPO_BAS') {
-            perguntasAtuais = todasPerguntas.filter(p => p.modulo.startsWith('BAS'));
+            perguntasAtuais = limitarAleatorias(todasPerguntas.filter(p => p.modulo.startsWith('BAS')), LIMITE_GRUPO);
         } else if (tipo === 'GRUPO_VIG') {
-            perguntasAtuais = todasPerguntas.filter(p => p.modulo.startsWith('VIG'));
+            perguntasAtuais = limitarAleatorias(todasPerguntas.filter(p => p.modulo.startsWith('VIG')), LIMITE_GRUPO);
         } else if (tipo === 'GRUPO_ALM') {
-            perguntasAtuais = todasPerguntas.filter(p => p.modulo.startsWith('ALM'));
+            perguntasAtuais = limitarAleatorias(todasPerguntas.filter(p => p.modulo.startsWith('ALM')), LIMITE_GRUPO);
         } else {
-            perguntasAtuais = todasPerguntas.filter(p => p.modulo === tipo);
+            perguntasAtuais = limitarAleatorias(todasPerguntas.filter(p => p.modulo === tipo), LIMITE_MODULO);
         }
-
-        baralhar(perguntasAtuais);
 
         index = 0;
         score = 0;
@@ -463,8 +503,11 @@
 
     function mostrar() {
         const p = perguntasAtuais[index];
+
         document.getElementById('txt-modulo').innerText = 'Módulo: ' + p.modulo;
         document.getElementById('txt-progresso').innerText = (index + 1) + ' / ' + perguntasAtuais.length;
+        document.getElementById('etiqueta-modulo').innerText = p.modulo;
+        document.getElementById('etiqueta-origem').innerText = p.origem;
         document.getElementById('txt-pergunta').innerText = p.pergunta;
 
         const fb = document.getElementById('caixa-feedback');
@@ -489,6 +532,7 @@
         fb.className = `feedback ${correta ? 'correto' : 'errado'}`;
         fb.innerHTML = `
             <b>${correta ? '✓ CERTO' : '✗ ERRADO'}</b><br>
+            <b>Origem:</b> ${p.origem}<br>
             <b>Resposta correta:</b> ${p.resposta}<br>
             ${p.obs ? `<br>${p.obs}` : ''}
         `;
