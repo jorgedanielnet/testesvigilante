@@ -25,7 +25,7 @@
         .contentor {
             background: white;
             width: 100%;
-            max-width: 850px;
+            max-width: 950px;
             border-radius: 12px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             padding: 30px;
@@ -35,11 +35,24 @@
             display: none !important;
         }
 
+        .secao-grupo {
+            margin: 24px 0 10px 0;
+        }
+
+        .titulo-grupo {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #1e293b;
+            margin-bottom: 12px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
         .grelha-modulos {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
             gap: 12px;
-            margin: 20px 0;
+            margin-bottom: 10px;
         }
 
         .btn-modulo {
@@ -59,7 +72,6 @@
         }
 
         .btn-total {
-            grid-column: 1 / -1;
             background: #1e293b;
             color: white;
             border: none;
@@ -68,6 +80,7 @@
             cursor: pointer;
             font-weight: bold;
             width: 100%;
+            margin-top: 20px;
         }
 
         .info-topo {
@@ -142,6 +155,18 @@
             font-weight: bold;
         }
 
+        .btn-menu {
+            width: 100%;
+            padding: 15px;
+            background: #0f172a;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 12px;
+            font-weight: bold;
+        }
+
         .loading {
             text-align: center;
             padding: 40px;
@@ -168,7 +193,22 @@
 
     <div id="menu-selecao" class="escondido">
         <p style="text-align: center; color: var(--secundaria);">Selecione um módulo para iniciar:</p>
-        <div id="lista-botoes" class="grelha-modulos"></div>
+
+        <div class="secao-grupo">
+            <div class="titulo-grupo">BAS — Formação Base</div>
+            <div id="lista-bas" class="grelha-modulos"></div>
+        </div>
+
+        <div class="secao-grupo">
+            <div class="titulo-grupo">VIG — Vigilante</div>
+            <div id="lista-vig" class="grelha-modulos"></div>
+        </div>
+
+        <div class="secao-grupo">
+            <div class="titulo-grupo">ALM — Alarmista</div>
+            <div id="lista-alm" class="grelha-modulos"></div>
+        </div>
+
         <button class="btn-total" onclick="iniciarQuiz('TOTAL')">SIMULADO COMPLETO (TUDO)</button>
     </div>
 
@@ -187,6 +227,7 @@
 
         <div id="caixa-feedback" class="feedback"></div>
         <button id="btn-proxima" class="btn-next escondido" onclick="proxima()">PRÓXIMA PERGUNTA</button>
+        <button class="btn-menu" onclick="voltarMenu()">VOLTAR AO MENU</button>
     </div>
 
     <div id="ecra-resultado" class="escondido">
@@ -194,6 +235,7 @@
         <div id="percentagem" style="font-size: 3.5rem; text-align: center; font-weight: bold; color: var(--primaria); margin: 20px 0;"></div>
         <div id="resumo-final" style="text-align: center; color: var(--secundaria); font-weight: bold; margin-bottom: 20px;"></div>
         <button class="btn-next" onclick="location.reload()" style="background: var(--primaria);">RECOMEÇAR</button>
+        <button class="btn-menu" onclick="voltarMenu()">VOLTAR AO MENU</button>
     </div>
 </div>
 
@@ -256,9 +298,7 @@
                 }
                 linhaAtual = '';
 
-                if (char === '\r' && nextChar === '\n') {
-                    i++;
-                }
+                if (char === '\r' && nextChar === '\n') i++;
             } else {
                 linhaAtual += char;
             }
@@ -269,6 +309,23 @@
         }
 
         return linhas;
+    }
+
+    function ordenarModulos(lista) {
+        return lista.sort((a, b) => {
+            const ma = a.match(/(\D+)\s*(\d+)/);
+            const mb = b.match(/(\D+)\s*(\d+)/);
+
+            if (!ma || !mb) return a.localeCompare(b, 'pt');
+
+            const grupoA = ma[1].trim();
+            const grupoB = mb[1].trim();
+            const numA = parseInt(ma[2], 10);
+            const numB = parseInt(mb[2], 10);
+
+            if (grupoA !== grupoB) return grupoA.localeCompare(grupoB, 'pt');
+            return numA - numB;
+        });
     }
 
     async function carregarDados() {
@@ -322,9 +379,8 @@
         }
     }
 
-    function renderizarMenu() {
-        const modulos = [...new Set(todasPerguntas.map(p => p.modulo))].sort((a, b) => a.localeCompare(b, 'pt'));
-        const container = document.getElementById('lista-botoes');
+    function criarBotoes(modulos, elementoId) {
+        const container = document.getElementById(elementoId);
         container.innerHTML = '';
 
         modulos.forEach(m => {
@@ -334,9 +390,23 @@
             btn.onclick = () => iniciarQuiz(m);
             container.appendChild(btn);
         });
+    }
+
+    function renderizarMenu() {
+        const modulos = [...new Set(todasPerguntas.map(p => p.modulo))];
+
+        const bas = ordenarModulos(modulos.filter(m => m.startsWith('BAS')));
+        const vig = ordenarModulos(modulos.filter(m => m.startsWith('VIG')));
+        const alm = ordenarModulos(modulos.filter(m => m.startsWith('ALM')));
+
+        criarBotoes(bas, 'lista-bas');
+        criarBotoes(vig, 'lista-vig');
+        criarBotoes(alm, 'lista-alm');
 
         document.getElementById('loader').classList.add('escondido');
         document.getElementById('menu-selecao').classList.remove('escondido');
+        document.getElementById('ecra-quiz').classList.add('escondido');
+        document.getElementById('ecra-resultado').classList.add('escondido');
     }
 
     function baralhar(array) {
@@ -412,6 +482,12 @@
             document.getElementById('percentagem').innerText = percentagem + '%';
             document.getElementById('resumo-final').innerText = `Acertos: ${score} em ${perguntasAtuais.length}`;
         }
+    }
+
+    function voltarMenu() {
+        document.getElementById('ecra-quiz').classList.add('escondido');
+        document.getElementById('ecra-resultado').classList.add('escondido');
+        document.getElementById('menu-selecao').classList.remove('escondido');
     }
 
     window.onload = carregarDados;
