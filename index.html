@@ -163,7 +163,7 @@
 
     <div id="loader" class="loading">
         ⏳ A carregar perguntas...
-        <div class="nota">A ler dados da Google Sheet...</div>
+        <div class="nota">A ler CSV publicado da Google Sheet...</div>
     </div>
 
     <div id="menu-selecao" class="escondido">
@@ -198,52 +198,113 @@
 </div>
 
 <script>
-    const SHEET_ID = '1eUOl-7IErlBTApVOhL06XtYFIL-ur41HtMWsCNsklfg';
-    const GID = '0';
-    const DATA_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${GID}`;
+    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRdV0-Xyu-KXHc9wV_Lldd0qOfuQlHYmsMkfIYow5b9dxl-2BQzDMHNHoufXG7yh7a1dnLKCtFXwzMA/pub?gid=0&single=true&output=csv';
 
     let todasPerguntas = [];
     let perguntasAtuais = [];
     let index = 0;
     let score = 0;
 
+    function parseCSVLine(line) {
+        const result = [];
+        let current = '';
+        let inQuotes = false;
+
+        for (let i = 0; i < line.length; i++) {
+            const char = line[i];
+            const nextChar = line[i + 1];
+
+            if (char === '"') {
+                if (inQuotes && nextChar === '"') {
+                    current += '"';
+                    i++;
+                } else {
+                    inQuotes = !inQuotes;
+                }
+            } else if (char === ',' && !inQuotes) {
+                result.push(current);
+                current = '';
+            } else {
+                current += char;
+            }
+        }
+
+        result.push(current);
+        return result;
+    }
+
+    function parseCSV(text) {
+        const linhas = [];
+        let linhaAtual = '';
+        let dentroAspas = false;
+
+        for (let i = 0; i < text.length; i++) {
+            const char = text[i];
+            const nextChar = text[i + 1];
+
+            if (char === '"') {
+                if (dentroAspas && nextChar === '"') {
+                    linhaAtual += '"';
+                    i++;
+                } else {
+                    dentroAspas = !dentroAspas;
+                    linhaAtual += char;
+                }
+            } else if ((char === '\n' || char === '\r') && !dentroAspas) {
+                if (linhaAtual.trim()) {
+                    linhas.push(parseCSVLine(linhaAtual));
+                }
+                linhaAtual = '';
+
+                if (char === '\r' && nextChar === '\n') {
+                    i++;
+                }
+            } else {
+                linhaAtual += char;
+            }
+        }
+
+        if (linhaAtual.trim()) {
+            linhas.push(parseCSVLine(linhaAtual));
+        }
+
+        return linhas;
+    }
+
     async function carregarDados() {
         try {
-            const response = await fetch(DATA_URL, { cache: 'no-store' });
+            const response = await fetch(CSV_URL, { cache: 'no-store' });
 
             if (!response.ok) {
                 throw new Error(`Falha HTTP: ${response.status}`);
             }
 
-            const text = await response.text();
+            const csvText = await response.text();
+            const linhas = parseCSV(csvText);
 
-            if (!text.includes('google.visualization.Query.setResponse')) {
-                throw new Error('Resposta inválida da Google Sheet.');
+            if (!linhas.length || linhas.length < 2) {
+                throw new Error('O CSV está vazio ou não contém perguntas.');
             }
 
-            const jsonText = text.substring(47, text.length - 2);
-            const jsonData = JSON.parse(jsonText);
+            const cabecalho = linhas[0].map(c => c.trim().toLowerCase());
+            const idxModulo = cabecalho.indexOf('módulo') !== -1 ? cabecalho.indexOf('módulo') : cabecalho.indexOf('modulo');
+            const idxPergunta = cabecalho.indexOf('pergunta');
+            const idxResposta = cabecalho.indexOf('resposta');
+            const idxObs = cabecalho.indexOf('observação') !== -1 ? cabecalho.indexOf('observação') : cabecalho.indexOf('observacao');
 
-            if (!jsonData.table || !jsonData.table.rows) {
-                throw new Error('Estrutura de dados inválida.');
+            if (idxModulo === -1 || idxPergunta === -1 || idxResposta === -1) {
+                throw new Error('O CSV não tem as colunas esperadas: Módulo, Pergunta e Resposta.');
             }
 
-            const linhas = jsonData.table.rows;
-
-            todasPerguntas = linhas.map(r => ({
-                modulo: r.c?.[0]?.v?.toString().trim() || '',
-                pergunta: r.c?.[3]?.v?.toString().trim() || '',
-                resposta: r.c?.[4]?.v?.toString().trim() || '',
-                obs: r.c?.[5]?.v?.toString().trim() || ''
-            })).filter(p =>
-                p.modulo &&
-                p.pergunta &&
-                p.resposta &&
-                p.pergunta.toLowerCase() !== 'pergunta'
-            );
+            todasPerguntas = linhas.slice(1).map(colunas => ({
+                modulo: (colunas[idxModulo] || '').trim(),
+                pergunta: (colunas[idxPergunta] || '').trim(),
+                resposta: (colunas[idxResposta] || '').trim(),
+                obs: idxObs !== -1 ? (colunas[idxObs] || '').trim() : ''
+            })).filter(p => p.modulo && p.pergunta && p.resposta);
 
             if (!todasPerguntas.length) {
-                throw new Error('A folha foi lida, mas não foram encontradas perguntas válidas.');
+                throw new Error('Não foram encontradas perguntas válidas no CSV.');
             }
 
             renderizarMenu();
@@ -252,10 +313,10 @@
             document.getElementById('loader').innerHTML = `
                 ⚠️ <b>Erro de acesso aos dados</b><br><br>
                 Verifique estes pontos:<br>
-                1. A Google Sheet está partilhada para <b>qualquer pessoa com a ligação</b>;<br>
-                2. O <b>gid</b> corresponde à folha certa;<br>
-                3. O site está a abrir por HTTP/HTTPS;<br>
-                4. O browser não está a bloquear pedidos externos.<br><br>
+                1. O link CSV publicado está correto;<br>
+                2. A folha foi realmente <b>publicada na web</b>;<br>
+                3. O <b>gid=0</b> corresponde à folha certa;<br>
+                4. O browser ou o site não estão a bloquear o pedido.<br><br>
                 <span style="font-size: 0.95rem; color: #64748b;">Detalhe técnico: ${erro.message}</span>
             `;
         }
