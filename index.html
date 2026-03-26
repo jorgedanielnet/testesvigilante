@@ -71,8 +71,24 @@
             color: white;
         }
 
-        .btn-total {
+        .btn-grupo {
+            width: 100%;
+            padding: 15px;
+            background: #334155;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 8px 0 6px 0;
+        }
+
+        .btn-grupo:hover {
             background: #1e293b;
+        }
+
+        .btn-total {
+            background: #0f172a;
             color: white;
             border: none;
             padding: 18px;
@@ -197,16 +213,19 @@
         <div class="secao-grupo">
             <div class="titulo-grupo">BAS — Formação Base</div>
             <div id="lista-bas" class="grelha-modulos"></div>
+            <button class="btn-grupo" onclick="iniciarQuiz('GRUPO_BAS')">SIMULADO BAS</button>
         </div>
 
         <div class="secao-grupo">
             <div class="titulo-grupo">VIG — Vigilante</div>
             <div id="lista-vig" class="grelha-modulos"></div>
+            <button class="btn-grupo" onclick="iniciarQuiz('GRUPO_VIG')">SIMULADO VIG</button>
         </div>
 
         <div class="secao-grupo">
             <div class="titulo-grupo">ALM — Alarmista</div>
             <div id="lista-alm" class="grelha-modulos"></div>
+            <button class="btn-grupo" onclick="iniciarQuiz('GRUPO_ALM')">SIMULADO ALM</button>
         </div>
 
         <button class="btn-total" onclick="iniciarQuiz('TOTAL')">SIMULADO COMPLETO (TUDO)</button>
@@ -313,8 +332,8 @@
 
     function ordenarModulos(lista) {
         return lista.sort((a, b) => {
-            const ma = a.match(/(\D+)\s*(\d+)/);
-            const mb = b.match(/(\D+)\s*(\d+)/);
+            const ma = a.match(/(\\D+)\\s*(\\d+)/);
+            const mb = b.match(/(\\D+)\\s*(\\d+)/);
 
             if (!ma || !mb) return a.localeCompare(b, 'pt');
 
@@ -417,10 +436,18 @@
         return array;
     }
 
-    function iniciarQuiz(m) {
-        perguntasAtuais = m === 'TOTAL'
-            ? [...todasPerguntas]
-            : todasPerguntas.filter(p => p.modulo === m);
+    function iniciarQuiz(tipo) {
+        if (tipo === 'TOTAL') {
+            perguntasAtuais = [...todasPerguntas];
+        } else if (tipo === 'GRUPO_BAS') {
+            perguntasAtuais = todasPerguntas.filter(p => p.modulo.startsWith('BAS'));
+        } else if (tipo === 'GRUPO_VIG') {
+            perguntasAtuais = todasPerguntas.filter(p => p.modulo.startsWith('VIG'));
+        } else if (tipo === 'GRUPO_ALM') {
+            perguntasAtuais = todasPerguntas.filter(p => p.modulo.startsWith('ALM'));
+        } else {
+            perguntasAtuais = todasPerguntas.filter(p => p.modulo === tipo);
+        }
 
         baralhar(perguntasAtuais);
 
