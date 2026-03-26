@@ -163,7 +163,7 @@
 
     <div id="loader" class="loading">
         ⏳ A carregar perguntas...
-        <div class="nota">Verifique se o ID da Google Sheet está correto e se a folha está partilhada/publicamente acessível.</div>
+        <div class="nota">A ler dados da Google Sheet...</div>
     </div>
 
     <div id="menu-selecao" class="escondido">
@@ -198,11 +198,7 @@
 </div>
 
 <script>
-    // SUBSTITUI PELO ID CORRETO DA TUA GOOGLE SHEET
-    // Exemplo de URL:
-    // https://docs.google.com/spreadsheets/d/XXXXXXXXXXXXXXXXXXXXXXXXXXXX/edit#gid=0
-    // O ID é a parte entre /d/ e /edit
-    const SHEET_ID = 'COLOCA_AQUI_O_ID_CORRETO';
+    const SHEET_ID = '1eUOl-7IErlBTApVOhL06XtYFIL-ur41HtMWsCNsklfg';
     const GID = '0';
     const DATA_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${GID}`;
 
@@ -213,10 +209,6 @@
 
     async function carregarDados() {
         try {
-            if (!SHEET_ID || SHEET_ID === 'COLOCA_AQUI_O_ID_CORRETO') {
-                throw new Error('Falta definir o SHEET_ID.');
-            }
-
             const response = await fetch(DATA_URL, { cache: 'no-store' });
 
             if (!response.ok) {
@@ -225,7 +217,7 @@
 
             const text = await response.text();
 
-            if (!text || !text.includes('google.visualization.Query.setResponse')) {
+            if (!text.includes('google.visualization.Query.setResponse')) {
                 throw new Error('Resposta inválida da Google Sheet.');
             }
 
@@ -260,10 +252,10 @@
             document.getElementById('loader').innerHTML = `
                 ⚠️ <b>Erro de acesso aos dados</b><br><br>
                 Verifique estes pontos:<br>
-                1. O <b>SHEET_ID</b> está correto;<br>
-                2. A Google Sheet está acessível a <b>qualquer pessoa com a ligação</b> ou publicada;<br>
-                3. O <b>gid</b> corresponde à folha certa;<br>
-                4. Está a abrir o HTML num servidor/site e não de uma forma bloqueada pelo browser.<br><br>
+                1. A Google Sheet está partilhada para <b>qualquer pessoa com a ligação</b>;<br>
+                2. O <b>gid</b> corresponde à folha certa;<br>
+                3. O site está a abrir por HTTP/HTTPS;<br>
+                4. O browser não está a bloquear pedidos externos.<br><br>
                 <span style="font-size: 0.95rem; color: #64748b;">Detalhe técnico: ${erro.message}</span>
             `;
         }
