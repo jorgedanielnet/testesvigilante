@@ -3,46 +3,173 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador Vigilante - Ultra Compatível</title>
+    <title>Simulador Vigilante</title>
     <style>
-        :root { --primaria: #1e40af; --secundaria: #475569; --sucesso: #16a34a; --erro: #dc2626; --fundo: #f1f5f9; }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--fundo); display: flex; justify-content: center; padding: 20px; margin: 0; }
-        .contentor { background: white; width: 100%; max-width: 850px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); padding: 30px; }
-        .escondido { display: none !important; }
-        
-        /* Menu */
-        .grelha-modulos { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-top: 20px; }
-        .btn-modulo { padding: 15px; background: white; border: 2px solid var(--primaria); color: var(--primaria); border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .btn-modulo:hover { background: var(--primaria); color: white; transform: translateY(-2px); }
-        .btn-total { grid-column: 1 / -1; background: #1e293b; color: white; border: none; padding: 18px; border-radius: 10px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        :root {
+            --primaria: #1e40af;
+            --secundaria: #475569;
+            --sucesso: #16a34a;
+            --erro: #dc2626;
+            --fundo: #f1f5f9;
+        }
 
-        /* Quiz */
-        .info-topo { display: flex; justify-content: space-between; color: var(--secundaria); font-weight: bold; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; }
-        .pergunta-caixa { font-size: 1.25rem; margin-bottom: 25px; line-height: 1.6; min-height: 100px; color: #1e293b; }
-        .opcoes { display: flex; gap: 15px; }
-        .btn-opcao { flex: 1; padding: 18px; font-size: 1.1rem; font-weight: bold; border: 2px solid #cbd5e1; border-radius: 10px; background: white; cursor: pointer; transition: 0.2s; }
-        .btn-opcao:hover { border-color: var(--primaria); background: #f0f7ff; }
-        
-        /* Feedback */
-        .feedback { padding: 20px; border-radius: 10px; margin-top: 20px; display: none; line-height: 1.5; }
-        .correto { background: #dcfce7; color: #166534; border: 1px solid var(--sucesso); }
-        .errado { background: #fee2e2; color: #991b1b; border: 1px solid var(--erro); }
-        
-        .btn-next { width: 100%; padding: 15px; background: var(--secundaria); color: white; border: none; border-radius: 8px; cursor: pointer; margin-top: 20px; font-weight: bold; }
-        .loading { text-align: center; padding: 50px; font-size: 1.2rem; color: var(--primaria); font-weight: bold; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--fundo);
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .contentor {
+            background: white;
+            width: 100%;
+            max-width: 850px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+
+        .escondido {
+            display: none !important;
+        }
+
+        .grelha-modulos {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .btn-modulo {
+            padding: 15px;
+            background: white;
+            border: 2px solid var(--primaria);
+            color: var(--primaria);
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .btn-modulo:hover {
+            background: var(--primaria);
+            color: white;
+        }
+
+        .btn-total {
+            grid-column: 1 / -1;
+            background: #1e293b;
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+        }
+
+        .info-topo {
+            display: flex;
+            justify-content: space-between;
+            color: var(--secundaria);
+            font-weight: bold;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 10px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .pergunta-caixa {
+            font-size: 1.25rem;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            min-height: 100px;
+            color: #1e293b;
+        }
+
+        .opcoes {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn-opcao {
+            flex: 1;
+            padding: 18px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border: 2px solid #cbd5e1;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+        }
+
+        .btn-opcao:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+        }
+
+        .feedback {
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .correto {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid var(--sucesso);
+        }
+
+        .errado {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid var(--erro);
+        }
+
+        .btn-next {
+            width: 100%;
+            padding: 15px;
+            background: var(--secundaria);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+
+        .nota {
+            font-size: 0.95rem;
+            color: #64748b;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
 
 <div class="contentor">
-    <h1 style="text-align: center; margin-bottom: 5px;">Simulador Vigilante</h1>
-    <p style="text-align: center; color: var(--secundaria); margin-bottom: 20px;" id="sub-titulo">A ligar ao Google Sheets...</p>
+    <h1 style="text-align: center; margin-bottom: 10px;">Simulador Vigilante</h1>
 
-    <div id="loader" class="loading">⏳ A carregar perguntas...</div>
+    <div id="loader" class="loading">
+        ⏳ A carregar perguntas...
+        <div class="nota">Verifique se o ID da Google Sheet está correto e se a folha está partilhada/publicamente acessível.</div>
+    </div>
 
     <div id="menu-selecao" class="escondido">
+        <p style="text-align: center; color: var(--secundaria);">Selecione um módulo para iniciar:</p>
         <div id="lista-botoes" class="grelha-modulos"></div>
-        <button class="btn-total" onclick="prepararQuiz('TOTAL')">SIMULADO COMPLETO (TODOS OS MÓDULOS)</button>
+        <button class="btn-total" onclick="iniciarQuiz('TOTAL')">SIMULADO COMPLETO (TUDO)</button>
     </div>
 
     <div id="ecra-quiz" class="escondido">
@@ -50,118 +177,192 @@
             <span id="txt-modulo"></span>
             <span id="txt-progresso"></span>
         </div>
+
         <div id="txt-pergunta" class="pergunta-caixa"></div>
+
         <div class="opcoes">
-            <button class="btn-opcao" onclick="validar('Verdadeiro')">VERDADEIRO</button>
-            <button class="btn-opcao" onclick="validar('Falso')">FALSO</button>
+            <button class="btn-opcao" onclick="verificar('Verdadeiro')">VERDADEIRO</button>
+            <button class="btn-opcao" onclick="verificar('Falso')">FALSO</button>
         </div>
+
         <div id="caixa-feedback" class="feedback"></div>
-        <button id="btn-continuar" class="btn-next escondido" onclick="proxima()">PRÓXIMA PERGUNTA</button>
+        <button id="btn-proxima" class="btn-next escondido" onclick="proxima()">PRÓXIMA PERGUNTA</button>
     </div>
 
     <div id="ecra-resultado" class="escondido">
-        <h2 style="text-align: center;">Resultado do Teste</h2>
-        <div id="percentagem" style="font-size: 4rem; text-align: center; font-weight: bold; color: var(--primaria); margin: 20px 0;">0%</div>
-        <button class="btn-next" onclick="location.reload()" style="background: var(--primaria);">VOLTAR AO MENU</button>
+        <h2 style="text-align: center;">Fim do Teste</h2>
+        <div id="percentagem" style="font-size: 3.5rem; text-align: center; font-weight: bold; color: var(--primaria); margin: 20px 0;"></div>
+        <div id="resumo-final" style="text-align: center; color: var(--secundaria); font-weight: bold; margin-bottom: 20px;"></div>
+        <button class="btn-next" onclick="location.reload()" style="background: var(--primaria);">RECOMEÇAR</button>
     </div>
 </div>
 
 <script>
-    // ID da tua folha tirado do teu link
-    const SHEET_ID = '1vRdV0-Xyu-KXHc9wV_Lldd0qOfuQlHYmsMkfIYow5b9dxl-2BQzDMHNHoufXG7yh7a1dnLKCtFXwzMA';
-    // Link usando a API GVIZ (contorna bloqueios de CORS)
-    const JSON_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&tq&gid=0`;
+    // SUBSTITUI PELO ID CORRETO DA TUA GOOGLE SHEET
+    // Exemplo de URL:
+    // https://docs.google.com/spreadsheets/d/XXXXXXXXXXXXXXXXXXXXXXXXXXXX/edit#gid=0
+    // O ID é a parte entre /d/ e /edit
+    const SHEET_ID = 'COLOCA_AQUI_O_ID_CORRETO';
+    const GID = '0';
+    const DATA_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${GID}`;
 
-    let baseDados = [];
-    let perguntasQuiz = [];
-    let atual = 0;
-    let certas = 0;
+    let todasPerguntas = [];
+    let perguntasAtuais = [];
+    let index = 0;
+    let score = 0;
 
-    async function buscarPerguntas() {
+    async function carregarDados() {
         try {
-            const res = await fetch(JSON_URL);
-            const texto = await res.text();
-            
-            // Limpar a resposta do Google (vem com um prefixo de função)
-            const jsonLimpo = JSON.parse(texto.substring(47, texto.length - 2));
-            const linhas = jsonLimpo.table.rows;
+            if (!SHEET_ID || SHEET_ID === 'COLOCA_AQUI_O_ID_CORRETO') {
+                throw new Error('Falta definir o SHEET_ID.');
+            }
 
-            baseDados = linhas.map(r => ({
-                modulo: r.c[0] ? r.c[0].v : '',
-                pergunta: r.c[3] ? r.c[3].v : '',
-                resposta: r.c[4] ? r.c[4].v : '',
-                obs: r.c[5] ? r.c[5].v : ''
-            })).filter(p => p.pergunta && p.modulo && p.pergunta !== "Pergunta");
+            const response = await fetch(DATA_URL, { cache: 'no-store' });
 
-            montarMenu();
-        } catch (e) {
-            document.getElementById('loader').innerHTML = "❌ Erro ao ligar à base de dados.<br><small>Verifique se o Google Sheets está 'Publicado na Web'.</small>";
+            if (!response.ok) {
+                throw new Error(`Falha HTTP: ${response.status}`);
+            }
+
+            const text = await response.text();
+
+            if (!text || !text.includes('google.visualization.Query.setResponse')) {
+                throw new Error('Resposta inválida da Google Sheet.');
+            }
+
+            const jsonText = text.substring(47, text.length - 2);
+            const jsonData = JSON.parse(jsonText);
+
+            if (!jsonData.table || !jsonData.table.rows) {
+                throw new Error('Estrutura de dados inválida.');
+            }
+
+            const linhas = jsonData.table.rows;
+
+            todasPerguntas = linhas.map(r => ({
+                modulo: r.c?.[0]?.v?.toString().trim() || '',
+                pergunta: r.c?.[3]?.v?.toString().trim() || '',
+                resposta: r.c?.[4]?.v?.toString().trim() || '',
+                obs: r.c?.[5]?.v?.toString().trim() || ''
+            })).filter(p =>
+                p.modulo &&
+                p.pergunta &&
+                p.resposta &&
+                p.pergunta.toLowerCase() !== 'pergunta'
+            );
+
+            if (!todasPerguntas.length) {
+                throw new Error('A folha foi lida, mas não foram encontradas perguntas válidas.');
+            }
+
+            renderizarMenu();
+        } catch (erro) {
+            console.error(erro);
+            document.getElementById('loader').innerHTML = `
+                ⚠️ <b>Erro de acesso aos dados</b><br><br>
+                Verifique estes pontos:<br>
+                1. O <b>SHEET_ID</b> está correto;<br>
+                2. A Google Sheet está acessível a <b>qualquer pessoa com a ligação</b> ou publicada;<br>
+                3. O <b>gid</b> corresponde à folha certa;<br>
+                4. Está a abrir o HTML num servidor/site e não de uma forma bloqueada pelo browser.<br><br>
+                <span style="font-size: 0.95rem; color: #64748b;">Detalhe técnico: ${erro.message}</span>
+            `;
         }
     }
 
-    function montarMenu() {
-        const mods = [...new Set(baseDados.map(p => p.modulo))].sort();
+    function renderizarMenu() {
+        const modulos = [...new Set(todasPerguntas.map(p => p.modulo))].sort((a, b) => a.localeCompare(b, 'pt'));
         const container = document.getElementById('lista-botoes');
-        
-        mods.forEach(m => {
+        container.innerHTML = '';
+
+        modulos.forEach(m => {
             const btn = document.createElement('button');
             btn.className = 'btn-modulo';
             btn.innerText = m;
-            btn.onclick = () => prepararQuiz(m);
+            btn.onclick = () => iniciarQuiz(m);
             container.appendChild(btn);
         });
 
         document.getElementById('loader').classList.add('escondido');
-        document.getElementById('sub-titulo').innerText = "Selecione o que deseja estudar:";
         document.getElementById('menu-selecao').classList.remove('escondido');
     }
 
-    function prepararQuiz(filtro) {
-        perguntasQuiz = filtro === 'TOTAL' ? [...baseDados] : baseDados.filter(p => p.modulo === filtro);
-        perguntasQuiz.sort(() => Math.random() - 0.5);
-        
-        atual = 0; certas = 0;
-        document.getElementById('menu-selecao').classList.add('escondido');
-        document.getElementById('ecra-quiz').classList.remove('escondido');
-        exibir();
+    function baralhar(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
     }
 
-    function exibir() {
-        const q = perguntasQuiz[atual];
-        document.getElementById('txt-modulo').innerText = q.modulo;
-        document.getElementById('txt-progresso').innerText = `${atual + 1} / ${perguntasQuiz.length}`;
-        document.getElementById('txt-pergunta').innerText = q.pergunta;
-        document.getElementById('caixa-feedback').style.display = 'none';
-        document.getElementById('btn-continuar').classList.add('escondido');
+    function iniciarQuiz(m) {
+        perguntasAtuais = m === 'TOTAL'
+            ? [...todasPerguntas]
+            : todasPerguntas.filter(p => p.modulo === m);
+
+        baralhar(perguntasAtuais);
+
+        index = 0;
+        score = 0;
+
+        document.getElementById('menu-selecao').classList.add('escondido');
+        document.getElementById('ecra-resultado').classList.add('escondido');
+        document.getElementById('ecra-quiz').classList.remove('escondido');
+
+        mostrar();
+    }
+
+    function mostrar() {
+        const p = perguntasAtuais[index];
+        document.getElementById('txt-modulo').innerText = 'Módulo: ' + p.modulo;
+        document.getElementById('txt-progresso').innerText = (index + 1) + ' / ' + perguntasAtuais.length;
+        document.getElementById('txt-pergunta').innerText = p.pergunta;
+
+        const fb = document.getElementById('caixa-feedback');
+        fb.style.display = 'none';
+        fb.innerHTML = '';
+        fb.className = 'feedback';
+
+        document.getElementById('btn-proxima').classList.add('escondido');
         document.querySelectorAll('.btn-opcao').forEach(b => b.disabled = false);
     }
 
-    function validar(escolha) {
-        const q = perguntasQuiz[atual];
-        const feedback = document.getElementById('caixa-feedback');
-        const correta = escolha.toLowerCase() === String(q.resposta).trim().toLowerCase();
-        
-        if (correta) certas++;
+    function verificar(escolha) {
+        const p = perguntasAtuais[index];
+        const fb = document.getElementById('caixa-feedback');
+        const correta = escolha.trim().toLowerCase() === String(p.resposta).trim().toLowerCase();
+
+        if (correta) score++;
+
         document.querySelectorAll('.btn-opcao').forEach(b => b.disabled = true);
-        
-        feedback.style.display = 'block';
-        feedback.className = `feedback ${correta ? 'correto' : 'errado'}`;
-        feedback.innerHTML = `<strong>${correta ? '✓ CORRETO' : '✗ INCORRETO'}</strong><br>${q.obs || ''}`;
-        document.getElementById('btn-continuar').classList.remove('escondido');
+
+        fb.style.display = 'block';
+        fb.className = `feedback ${correta ? 'correto' : 'errado'}`;
+        fb.innerHTML = `
+            <b>${correta ? '✓ CERTO' : '✗ ERRADO'}</b><br>
+            <b>Resposta correta:</b> ${p.resposta}<br>
+            ${p.obs ? `<br>${p.obs}` : ''}
+        `;
+
+        document.getElementById('btn-proxima').classList.remove('escondido');
     }
 
     function proxima() {
-        atual++;
-        if (atual < perguntasQuiz.length) exibir();
-        else {
+        index++;
+
+        if (index < perguntasAtuais.length) {
+            mostrar();
+        } else {
             document.getElementById('ecra-quiz').classList.add('escondido');
             document.getElementById('ecra-resultado').classList.remove('escondido');
-            const perc = Math.round((certas/perguntasQuiz.length)*100);
-            document.getElementById('percentagem').innerText = perc + "%";
+
+            const percentagem = Math.round((score / perguntasAtuais.length) * 100);
+            document.getElementById('percentagem').innerText = percentagem + '%';
+            document.getElementById('resumo-final').innerText = `Acertos: ${score} em ${perguntasAtuais.length}`;
         }
     }
 
-    buscarPerguntas();
+    window.onload = carregarDados;
 </script>
+
 </body>
 </html>
