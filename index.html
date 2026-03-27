@@ -3,38 +3,257 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador Vigilante - Edição Compatível</title>
+    <title>Simulador Vigilante</title>
     <style>
-        :root { --primaria: #1e40af; --secundaria: #475569; --sucesso: #16a34a; --erro: #dc2626; --fundo: #f1f5f9; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--fundo); display: flex; justify-content: center; padding: 20px; margin: 0; }
-        .contentor { background: white; width: 100%; max-width: 850px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); padding: 30px; }
-        .escondido { display: none !important; }
-        .grelha-modulos { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 20px 0; }
-        .btn-modulo { padding: 15px; background: white; border: 2px solid var(--primaria); color: var(--primaria); border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .btn-modulo:hover { background: var(--primaria); color: white; }
-        .btn-total { grid-column: 1 / -1; background: #1e293b; color: white; border: none; padding: 18px; border-radius: 10px; cursor: pointer; font-weight: bold; width: 100%; }
-        .info-topo { display: flex; justify-content: space-between; color: var(--secundaria); font-weight: bold; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; }
-        .pergunta-caixa { font-size: 1.25rem; margin-bottom: 25px; line-height: 1.6; min-height: 100px; color: #1e293b; }
-        .opcoes { display: flex; gap: 15px; }
-        .btn-opcao { flex: 1; padding: 18px; font-size: 1.1rem; font-weight: bold; border: 2px solid #cbd5e1; border-radius: 10px; background: white; cursor: pointer; }
-        .feedback { padding: 20px; border-radius: 10px; margin-top: 20px; display: none; }
-        .correto { background: #dcfce7; color: #166534; border: 1px solid var(--sucesso); }
-        .errado { background: #fee2e2; color: #991b1b; border: 1px solid var(--erro); }
-        .btn-next { width: 100%; padding: 15px; background: var(--secundaria); color: white; border: none; border-radius: 8px; cursor: pointer; margin-top: 20px; font-weight: bold; }
-        .loading { text-align: center; padding: 40px; font-size: 1.2rem; }
+        :root {
+            --primaria: #1e40af;
+            --secundaria: #475569;
+            --sucesso: #16a34a;
+            --erro: #dc2626;
+            --fundo: #f1f5f9;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--fundo);
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .contentor {
+            background: white;
+            width: 100%;
+            max-width: 950px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+
+        .escondido {
+            display: none !important;
+        }
+
+        .secao-grupo {
+            margin: 24px 0 10px 0;
+        }
+
+        .titulo-grupo {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #1e293b;
+            margin-bottom: 12px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .grelha-modulos {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .btn-modulo {
+            padding: 15px;
+            background: white;
+            border: 2px solid var(--primaria);
+            color: var(--primaria);
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .btn-modulo:hover {
+            background: var(--primaria);
+            color: white;
+        }
+
+        .btn-grupo {
+            width: 100%;
+            padding: 15px;
+            background: #334155;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 8px 0 6px 0;
+        }
+
+        .btn-grupo:hover {
+            background: #1e293b;
+        }
+
+        .btn-total {
+            background: #0f172a;
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .info-topo {
+            display: flex;
+            justify-content: space-between;
+            color: var(--secundaria);
+            font-weight: bold;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 10px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .etiquetas {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .etiqueta {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .etiqueta-modulo {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .etiqueta-origem {
+            background: #ede9fe;
+            color: #6d28d9;
+        }
+
+        .pergunta-caixa {
+            font-size: 1.25rem;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            min-height: 100px;
+            color: #1e293b;
+        }
+
+        .opcoes {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn-opcao {
+            flex: 1;
+            padding: 18px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border: 2px solid #cbd5e1;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+        }
+
+        .btn-opcao:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+        }
+
+        .feedback {
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .correto {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid var(--sucesso);
+        }
+
+        .errado {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid var(--erro);
+        }
+
+        .btn-next {
+            width: 100%;
+            padding: 15px;
+            background: var(--secundaria);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .btn-menu {
+            width: 100%;
+            padding: 15px;
+            background: #0f172a;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 12px;
+            font-weight: bold;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+
+        .nota {
+            font-size: 0.95rem;
+            color: #64748b;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
 
 <div class="contentor">
-    <h1 style="text-align: center; margin-bottom: 10px;">Preparação para o Exame Final da PSP - Vigilante</h1>
-    
-    <div id="loader" class="loading">⏳ A estabelecer ligação segura com Google Sheets...</div>
+    <h1 style="text-align: center; margin-bottom: 10px;">Simulador Vigilante</h1>
+
+    <div id="loader" class="loading">
+        ⏳ A carregar perguntas...
+        <div class="nota">A ler CSV publicado da Google Sheet...</div>
+    </div>
 
     <div id="menu-selecao" class="escondido">
         <p style="text-align: center; color: var(--secundaria);">Selecione um módulo para iniciar:</p>
-        <div id="lista-botoes" class="grelha-modulos"></div>
-        <button class="btn-total" onclick="iniciarQuiz('TOTAL')">SIMULADO COMPLETO (TUDO)</button>
+
+        <div class="secao-grupo">
+            <div class="titulo-grupo">BAS — Formação Base</div>
+            <div id="lista-bas" class="grelha-modulos"></div>
+            <button class="btn-grupo" onclick="iniciarQuiz('GRUPO_BAS')">SIMULADO BAS (20)</button>
+        </div>
+
+        <div class="secao-grupo">
+            <div class="titulo-grupo">VIG — Vigilante</div>
+            <div id="lista-vig" class="grelha-modulos"></div>
+            <button class="btn-grupo" onclick="iniciarQuiz('GRUPO_VIG')">SIMULADO VIG (20)</button>
+        </div>
+
+        <div class="secao-grupo">
+            <div class="titulo-grupo">ALM — Alarmista</div>
+            <div id="lista-alm" class="grelha-modulos"></div>
+            <button class="btn-grupo" onclick="iniciarQuiz('GRUPO_ALM')">SIMULADO ALM (20)</button>
+        </div>
+
+        <button class="btn-total" onclick="iniciarQuiz('TOTAL')">SIMULADO COMPLETO (25)</button>
     </div>
 
     <div id="ecra-quiz" class="escondido">
@@ -42,122 +261,308 @@
             <span id="txt-modulo"></span>
             <span id="txt-progresso"></span>
         </div>
+
+        <div class="etiquetas">
+            <span id="etiqueta-modulo" class="etiqueta etiqueta-modulo"></span>
+            <span id="etiqueta-origem" class="etiqueta etiqueta-origem"></span>
+        </div>
+
         <div id="txt-pergunta" class="pergunta-caixa"></div>
+
         <div class="opcoes">
             <button class="btn-opcao" onclick="verificar('Verdadeiro')">VERDADEIRO</button>
             <button class="btn-opcao" onclick="verificar('Falso')">FALSO</button>
         </div>
+
         <div id="caixa-feedback" class="feedback"></div>
         <button id="btn-proxima" class="btn-next escondido" onclick="proxima()">PRÓXIMA PERGUNTA</button>
+        <button class="btn-menu" onclick="voltarMenu()">VOLTAR AO MENU</button>
     </div>
 
     <div id="ecra-resultado" class="escondido">
         <h2 style="text-align: center;">Fim do Teste</h2>
         <div id="percentagem" style="font-size: 3.5rem; text-align: center; font-weight: bold; color: var(--primaria); margin: 20px 0;"></div>
+        <div id="resumo-final" style="text-align: center; color: var(--secundaria); font-weight: bold; margin-bottom: 20px;"></div>
         <button class="btn-next" onclick="location.reload()" style="background: var(--primaria);">RECOMEÇAR</button>
+        <button class="btn-menu" onclick="voltarMenu()">VOLTAR AO MENU</button>
     </div>
 </div>
 
 <script>
-    // Base principal do simulador (mantém o formato anterior)
-    const SHEET_ID = '1vRdV0-Xyu-KXHc9wV_Lldd0qOfuQlHYmsMkfIYow5b9dxl-2BQzDMHNHoufXG7yh7a1dnLKCtFXwzMA';
-    // Link da nova base de dados do exame da PSP (TSV publicado)
-    const PSP_EXAME_TSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRdV0-Xyu-KXHc9wV_Lldd0qOfuQlHYmsMkfIYow5b9dxl-2BQzDMHNHoufXG7yh7a1dnLKCtFXwzMA/pub?gid=1749048722&single=true&output=tsv';
-    // Mantém o endpoint antigo para não alterar o formato nem o comportamento do quiz
-    const DATA_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&tq&gid=1749048722`;
+    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRdV0-Xyu-KXHc9wV_Lldd0qOfuQlHYmsMkfIYow5b9dxl-2BQzDMHNHoufXG7yh7a1dnLKCtFXwzMA/pub?gid=0&single=true&output=csv';
+
+    const LIMITE_MODULO = 10;
+    const LIMITE_GRUPO = 20;
+    const LIMITE_TOTAL = 25;
 
     let todasPerguntas = [];
     let perguntasAtuais = [];
     let index = 0;
     let score = 0;
 
-    // Função que carrega os dados usando a técnica de injeção de script (contorna o bloqueio local)
+    function parseCSVLine(line) {
+        const result = [];
+        let current = '';
+        let inQuotes = false;
+
+        for (let i = 0; i < line.length; i++) {
+            const char = line[i];
+            const nextChar = line[i + 1];
+
+            if (char === '"') {
+                if (inQuotes && nextChar === '"') {
+                    current += '"';
+                    i++;
+                } else {
+                    inQuotes = !inQuotes;
+                }
+            } else if (char === ',' && !inQuotes) {
+                result.push(current);
+                current = '';
+            } else {
+                current += char;
+            }
+        }
+
+        result.push(current);
+        return result;
+    }
+
+    function parseCSV(text) {
+        const linhas = [];
+        let linhaAtual = '';
+        let dentroAspas = false;
+
+        for (let i = 0; i < text.length; i++) {
+            const char = text[i];
+            const nextChar = text[i + 1];
+
+            if (char === '"') {
+                if (dentroAspas && nextChar === '"') {
+                    linhaAtual += '"';
+                    i++;
+                } else {
+                    dentroAspas = !dentroAspas;
+                    linhaAtual += char;
+                }
+            } else if ((char === '\n' || char === '\r') && !dentroAspas) {
+                if (linhaAtual.trim()) {
+                    linhas.push(parseCSVLine(linhaAtual));
+                }
+                linhaAtual = '';
+
+                if (char === '\r' && nextChar === '\n') i++;
+            } else {
+                linhaAtual += char;
+            }
+        }
+
+        if (linhaAtual.trim()) {
+            linhas.push(parseCSVLine(linhaAtual));
+        }
+
+        return linhas;
+    }
+
+    function ordenarModulos(lista) {
+        return lista.sort((a, b) => {
+            const ma = a.match(/(\D+)\s*(\d+)/);
+            const mb = b.match(/(\D+)\s*(\d+)/);
+
+            if (!ma || !mb) return a.localeCompare(b, 'pt');
+
+            const grupoA = ma[1].trim();
+            const grupoB = mb[1].trim();
+            const numA = parseInt(ma[2], 10);
+            const numB = parseInt(mb[2], 10);
+
+            if (grupoA !== grupoB) return grupoA.localeCompare(grupoB, 'pt');
+            return numA - numB;
+        });
+    }
+
+    function baralhar(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    function limitarAleatorias(lista, limite) {
+        const copia = [...lista];
+        baralhar(copia);
+        return copia.slice(0, Math.min(limite, copia.length));
+    }
+
     async function carregarDados() {
         try {
-            const response = await fetch(DATA_URL);
-            const text = await response.text();
-            
-            // O Google devolve um JSON "sujo" com código à volta, precisamos de o limpar
-            const jsonData = JSON.parse(text.substring(47, text.length - 2));
-            const linhas = jsonData.table.rows;
+            const response = await fetch(CSV_URL, { cache: 'no-store' });
 
-            todasPerguntas = linhas.map(r => {
-                // Mapeamento das tuas colunas: 0=Módulo, 3=Pergunta, 4=Resposta, 5=Observação
-                return {
-                    modulo: r.c[0] ? r.c[0].v : '',
-                    pergunta: r.c[3] ? r.c[3].v : '',
-                    resposta: r.c[4] ? r.c[4].v : '',
-                    obs: r.c[5] ? r.c[5].v : ''
-                };
-            }).filter(p => p.pergunta && p.modulo && p.pergunta !== "Pergunta"); // Limpa cabeçalhos e vazios
+            if (!response.ok) {
+                throw new Error(`Falha HTTP: ${response.status}`);
+            }
+
+            const csvText = await response.text();
+            const linhas = parseCSV(csvText);
+
+            if (!linhas.length || linhas.length < 2) {
+                throw new Error('O CSV está vazio ou não contém perguntas.');
+            }
+
+            const cabecalho = linhas[0].map(c => c.trim().toLowerCase());
+            const idxModulo = cabecalho.indexOf('módulo') !== -1 ? cabecalho.indexOf('módulo') : cabecalho.indexOf('modulo');
+            const idxOrigem = cabecalho.indexOf('origem');
+            const idxPergunta = cabecalho.indexOf('pergunta');
+            const idxResposta = cabecalho.indexOf('resposta');
+            const idxObs = cabecalho.indexOf('observação') !== -1 ? cabecalho.indexOf('observação') : cabecalho.indexOf('observacao');
+
+            if (idxModulo === -1 || idxOrigem === -1 || idxPergunta === -1 || idxResposta === -1) {
+                throw new Error('O CSV não tem as colunas esperadas: Módulo, Origem, Pergunta e Resposta.');
+            }
+
+            todasPerguntas = linhas.slice(1).map(colunas => ({
+                modulo: (colunas[idxModulo] || '').trim(),
+                origem: (colunas[idxOrigem] || '').trim(),
+                pergunta: (colunas[idxPergunta] || '').trim(),
+                resposta: (colunas[idxResposta] || '').trim(),
+                obs: idxObs !== -1 ? (colunas[idxObs] || '').trim() : ''
+            })).filter(p => p.modulo && p.origem && p.pergunta && p.resposta);
+
+            if (!todasPerguntas.length) {
+                throw new Error('Não foram encontradas perguntas válidas no CSV.');
+            }
 
             renderizarMenu();
-        } catch (e) {
-            console.error(e);
-            document.getElementById('loader').innerHTML = "⚠️ <b>Erro de Acesso</b><br><br>O browser bloqueou a ligação direta.<br>Por favor, tente abrir este ficheiro com o <b>Firefox</b> ou coloque-o num site (como o Netlify Drop).";
+        } catch (erro) {
+            console.error(erro);
+            document.getElementById('loader').innerHTML = `
+                ⚠️ <b>Erro de acesso aos dados</b><br><br>
+                Verifique estes pontos:<br>
+                1. O link CSV publicado está correto;<br>
+                2. A folha foi realmente <b>publicada na web</b>;<br>
+                3. O <b>gid=0</b> corresponde à folha certa;<br>
+                4. O browser ou o site não estão a bloquear o pedido.<br><br>
+                <span style="font-size: 0.95rem; color: #64748b;">Detalhe técnico: ${erro.message}</span>
+            `;
         }
     }
 
-    function renderizarMenu() {
-        const modulos = [...new Set(todasPerguntas.map(p => p.modulo))].sort();
-        const container = document.getElementById('lista-botoes');
-        
+    function criarBotoes(modulos, elementoId) {
+        const container = document.getElementById(elementoId);
+        container.innerHTML = '';
+
         modulos.forEach(m => {
             const btn = document.createElement('button');
             btn.className = 'btn-modulo';
-            btn.innerText = m;
+            btn.innerText = `${m} (${Math.min(LIMITE_MODULO, todasPerguntas.filter(p => p.modulo === m).length)})`;
             btn.onclick = () => iniciarQuiz(m);
             container.appendChild(btn);
         });
+    }
+
+    function renderizarMenu() {
+        const modulos = [...new Set(todasPerguntas.map(p => p.modulo))];
+
+        const bas = ordenarModulos(modulos.filter(m => m.startsWith('BAS')));
+        const vig = ordenarModulos(modulos.filter(m => m.startsWith('VIG')));
+        const alm = ordenarModulos(modulos.filter(m => m.startsWith('ALM')));
+
+        criarBotoes(bas, 'lista-bas');
+        criarBotoes(vig, 'lista-vig');
+        criarBotoes(alm, 'lista-alm');
 
         document.getElementById('loader').classList.add('escondido');
         document.getElementById('menu-selecao').classList.remove('escondido');
+        document.getElementById('ecra-quiz').classList.add('escondido');
+        document.getElementById('ecra-resultado').classList.add('escondido');
     }
 
-    function iniciarQuiz(m) {
-        perguntasAtuais = m === 'TOTAL' ? [...todasPerguntas] : todasPerguntas.filter(p => p.modulo === m);
-        perguntasAtuais.sort(() => Math.random() - 0.5);
-        index = 0; score = 0;
+    function iniciarQuiz(tipo) {
+        if (tipo === 'TOTAL') {
+            perguntasAtuais = limitarAleatorias(todasPerguntas, LIMITE_TOTAL);
+        } else if (tipo === 'GRUPO_BAS') {
+            perguntasAtuais = limitarAleatorias(todasPerguntas.filter(p => p.modulo.startsWith('BAS')), LIMITE_GRUPO);
+        } else if (tipo === 'GRUPO_VIG') {
+            perguntasAtuais = limitarAleatorias(todasPerguntas.filter(p => p.modulo.startsWith('VIG')), LIMITE_GRUPO);
+        } else if (tipo === 'GRUPO_ALM') {
+            perguntasAtuais = limitarAleatorias(todasPerguntas.filter(p => p.modulo.startsWith('ALM')), LIMITE_GRUPO);
+        } else {
+            perguntasAtuais = limitarAleatorias(todasPerguntas.filter(p => p.modulo === tipo), LIMITE_MODULO);
+        }
+
+        index = 0;
+        score = 0;
+
         document.getElementById('menu-selecao').classList.add('escondido');
+        document.getElementById('ecra-resultado').classList.add('escondido');
         document.getElementById('ecra-quiz').classList.remove('escondido');
+
         mostrar();
     }
 
     function mostrar() {
         const p = perguntasAtuais[index];
-        document.getElementById('txt-modulo').innerText = "Módulo: " + p.modulo;
-        document.getElementById('txt-progresso').innerText = (index + 1) + " / " + perguntasAtuais.length;
+
+        document.getElementById('txt-modulo').innerText = 'Módulo: ' + p.modulo;
+        document.getElementById('txt-progresso').innerText = (index + 1) + ' / ' + perguntasAtuais.length;
+        document.getElementById('etiqueta-modulo').innerText = p.modulo;
+        document.getElementById('etiqueta-origem').innerText = p.origem;
         document.getElementById('txt-pergunta').innerText = p.pergunta;
-        document.getElementById('caixa-feedback').style.display = 'none';
+
+        const fb = document.getElementById('caixa-feedback');
+        fb.style.display = 'none';
+        fb.innerHTML = '';
+        fb.className = 'feedback';
+
         document.getElementById('btn-proxima').classList.add('escondido');
         document.querySelectorAll('.btn-opcao').forEach(b => b.disabled = false);
     }
 
-    function verificar(esc) {
+    function verificar(escolha) {
         const p = perguntasAtuais[index];
         const fb = document.getElementById('caixa-feedback');
-        const correta = esc.toLowerCase() === String(p.resposta).toLowerCase();
-        
-        if(correta) score++;
+        const correta = escolha.trim().toLowerCase() === String(p.resposta).trim().toLowerCase();
+
+        if (correta) score++;
+
         document.querySelectorAll('.btn-opcao').forEach(b => b.disabled = true);
-        
+
         fb.style.display = 'block';
         fb.className = `feedback ${correta ? 'correto' : 'errado'}`;
-        fb.innerHTML = `<b>${correta ? '✓ CERTO' : '✗ ERRADO'}</b><br>${p.obs || ''}`;
+        fb.innerHTML = `
+            <b>${correta ? '✓ CERTO' : '✗ ERRADO'}</b><br>
+            <b>Origem:</b> ${p.origem}<br>
+            <b>Resposta correta:</b> ${p.resposta}<br>
+            ${p.obs ? `<br>${p.obs}` : ''}
+        `;
+
         document.getElementById('btn-proxima').classList.remove('escondido');
     }
 
     function proxima() {
         index++;
-        if(index < perguntasAtuais.length) mostrar();
-        else {
+
+        if (index < perguntasAtuais.length) {
+            mostrar();
+        } else {
             document.getElementById('ecra-quiz').classList.add('escondido');
             document.getElementById('ecra-resultado').classList.remove('escondido');
-            document.getElementById('percentagem').innerText = Math.round((score/perguntasAtuais.length)*100) + "%";
+
+            const percentagem = Math.round((score / perguntasAtuais.length) * 100);
+            document.getElementById('percentagem').innerText = percentagem + '%';
+            document.getElementById('resumo-final').innerText = `Acertos: ${score} em ${perguntasAtuais.length}`;
         }
+    }
+
+    function voltarMenu() {
+        document.getElementById('ecra-quiz').classList.add('escondido');
+        document.getElementById('ecra-resultado').classList.add('escondido');
+        document.getElementById('menu-selecao').classList.remove('escondido');
     }
 
     window.onload = carregarDados;
 </script>
+
 </body>
 </html>
