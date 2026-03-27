@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Preparação para o Exame Final da PSP - Vigilante</title>
+    <title>Simulador de Formação - Vigilante</title>
     <style>
         :root {
             --primaria: #1e40af;
@@ -18,182 +18,207 @@
         .contentor { background: white; width: 100%; max-width: 950px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); padding: 30px; }
         .escondido { display: none !important; }
         
-        /* Menu */
-        .btn-psp { width: 100%; padding: 20px; background: var(--destaque-psp); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 1.1rem; transition: 0.3s; margin-top: 20px; }
-        .btn-psp:hover { background: #991b1b; transform: translateY(-2px); }
+        .grid-botoes { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
+        .btn-modulo { padding: 15px; background: white; border: 2px solid var(--primaria); color: var(--primaria); border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-modulo:hover { background: var(--primaria); color: white; }
+        
+        .btn-psp { grid-column: 1 / -1; padding: 20px; background: var(--destaque-psp); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 1.1rem; margin-bottom: 10px; }
+        .btn-psp:hover { background: #991b1b; }
 
-        /* Quiz UI */
         .info-topo { display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 15px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
         .pergunta-caixa { font-size: 1.2rem; margin-bottom: 20px; line-height: 1.5; color: #1e293b; min-height: 80px; }
-        .opcoes-multiplas { display: flex; flex-direction: column; gap: 10px; }
+        .opcoes-container { display: flex; flex-direction: column; gap: 10px; }
         .btn-opcao { padding: 15px; border: 2px solid #cbd5e1; border-radius: 8px; background: white; cursor: pointer; text-align: left; transition: 0.2s; font-size: 1rem; }
         .btn-opcao:hover:not(:disabled) { border-color: var(--primaria); background: #f8fafc; }
         
-        /* Feedback */
         .feedback { padding: 15px; border-radius: 8px; margin-top: 15px; display: none; line-height: 1.4; }
         .correto { background: #dcfce7; color: #166534; border: 1px solid var(--sucesso); }
         .errado { background: #fee2e2; color: #991b1b; border: 1px solid var(--erro); }
 
-        /* Resultados */
-        .card-resultado { text-align: center; padding: 20px; }
-        .score-big { font-size: 4rem; font-weight: bold; color: var(--primaria); margin: 10px 0; }
-        .classificacao { font-size: 1.5rem; font-weight: bold; margin-bottom: 20px; }
-        
-        /* Tabela de Revisão */
-        .revisao-lista { margin-top: 20px; text-align: left; border-top: 2px solid #e2e8f0; padding-top: 20px; }
-        .item-revisao { padding: 15px; border-bottom: 1px solid #e2e8f0; margin-bottom: 10px; background: #fff; }
-        .item-revisao b { color: var(--destaque-psp); }
+        .score-big { font-size: 4rem; font-weight: bold; color: var(--primaria); text-align: center; }
+        .revisao-lista { margin-top: 20px; border-top: 2px solid #e2e8f0; padding-top: 20px; }
+        .item-revisao { padding: 15px; border-bottom: 1px solid #e2e8f0; margin-bottom: 10px; }
         
         .btn-acao { width: 100%; padding: 15px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 10px; }
         .btn-next { background: var(--primaria); color: white; }
-        .btn-revisao { background: var(--secundaria); color: white; }
     </style>
 </head>
 <body>
 
 <div class="contentor">
-    <h1 id="titulo-principal" style="text-align: center; color: var(--primaria);">Preparação para o Exame Final da PSP - Vigilante</h1>
+    <h1 id="titulo-pagina" style="text-align: center; color: var(--primaria);">Simulador de Formação Vigilante</h1>
 
-    <div id="loader" style="text-align:center; padding: 50px;">⏳ A carregar base de dados oficial...</div>
+    <div id="loader" style="text-align:center; padding: 50px;">⏳ A carregar base de dados...</div>
 
     <div id="menu-inicial" class="escondido">
-        <p style="text-align:center; color: var(--secundaria);">Este simulador gera um exame de 20 perguntas, selecionando aleatoriamente uma de cada tema da base de dados.</p>
-        <button class="btn-psp" onclick="gerarExamePSP()">INICIAR EXAME MODELO PSP (20 Questões)</button>
+        <button class="btn-psp" onclick="gerarExamePSP()">🚀 EXAME FINAL MODELO PSP (20 Questões Aleatórias)</button>
+        <h3 style="margin-top: 30px; color: var(--secundaria);">Estudo por Módulo (Verdadeiro/Falso):</h3>
+        <div id="grid-modulos" class="grid-botoes"></div>
     </div>
 
     <div id="ecra-quiz" class="escondido">
         <div class="info-topo">
-            <span id="txt-tema"></span>
+            <span id="txt-modulo"></span>
             <span id="txt-progresso"></span>
         </div>
         <div id="txt-pergunta" class="pergunta-caixa"></div>
-        <div id="container-opcoes" class="opcoes-multiplas"></div>
+        <div id="container-opcoes" class="opcoes-container"></div>
         
         <div id="caixa-feedback" class="feedback"></div>
         <button id="btn-proxima" class="btn-acao btn-next escondido" onclick="proxima()">PRÓXIMA PERGUNTA</button>
     </div>
 
     <div id="ecra-resultado" class="escondido">
-        <div class="card-resultado">
-            <h2>Resultado Final</h2>
-            <div id="resumo-stats" style="color: var(--secundaria); font-weight: bold;"></div>
-            <div id="score-percent" class="score-big">0%</div>
-            <div id="txt-classificacao" class="classificacao"></div>
-            
-            <button class="btn-acao btn-next" onclick="location.reload()">NOVO EXAME</button>
-            <button id="btn-ver-erros" class="btn-acao btn-revisao escondido" onclick="mostrarRevisao()">VER ONDE ERREI + OBSERVAÇÕES</button>
-        </div>
+        <h2 style="text-align:center">Avaliação Final</h2>
+        <div id="score-percent" class="score-big">0%</div>
+        <p id="resumo-stats" style="text-align:center; font-weight:bold;"></p>
+        
+        <button class="btn-acao btn-next" onclick="location.reload()">VOLTAR AO MENU</button>
+        <button id="btn-ver-erros" class="btn-acao" style="background:var(--secundaria); color:white" onclick="mostrarRevisao()">REVER ERROS E OBSERVAÇÕES</button>
 
-        <div id="zona-revisao" class="revisao-lista escondido">
-            <h3 style="color: var(--erro);">Relatório de Erros e Observações</h3>
-            <div id="lista-erros"></div>
-        </div>
+        <div id="zona-revisao" class="revisao-lista escondido"></div>
     </div>
 </div>
 
 <script>
-    const TSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRdV0-Xyu-KXHc9wV_Lldd0qOfuQlHYmsMkfIYow5b9dxl-2BQzDMHNHoufXG7yh7a1dnLKCtFXwzMA/pub?gid=1749048722&single=true&output=tsv';
-    
-    let baseDados = [];
-    let perguntasExame = [];
-    let historicoRespostas = [];
+    // Links das Folhas do Google Sheets
+    const URL_MODULOS = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRdV0-Xyu-KXHc9wV_Lldd0qOfuQlHYmsMkfIYow5b9dxl-2BQzDMHNHoufXG7yh7a1dnLKCtFXwzMA/pub?gid=0&single=true&output=tsv';
+    const URL_PSP = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRdV0-Xyu-KXHc9wV_Lldd0qOfuQlHYmsMkfIYow5b9dxl-2BQzDMHNHoufXG7yh7a1dnLKCtFXwzMA/pub?gid=1749048722&single=true&output=tsv';
+
+    let dadosModulos = [];
+    let dadosPSP = [];
+    let perguntasAtuais = [];
+    let historico = [];
     let index = 0;
     let acertos = 0;
 
-    async function carregarDados() {
+    async function carregarTudo() {
         try {
-            const resp = await fetch(TSV_URL);
-            const text = await resp.text();
-            const linhas = text.split(/\r?\n/);
-            const cabecalho = linhas[0].split('\t').map(c => c.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""));
+            const [resMod, resPsp] = await Promise.all([fetch(URL_MODULOS), fetch(URL_PSP)]);
+            const textoMod = await resMod.text();
+            const textoPsp = await resPsp.text();
 
-            baseDados = linhas.slice(1).map(linha => {
-                const col = linha.split('\t');
-                return {
-                    tema: col[cabecalho.indexOf('tema')] || 'Geral',
-                    modulo: col[cabecalho.indexOf('modulo')] || 'PSP',
-                    pergunta: col[cabecalho.indexOf('pergunta')],
-                    opcoes: { A: col[cabecalho.indexOf('opcaoa')], B: col[cabecalho.indexOf('opcaob')], C: col[cabecalho.indexOf('opcaoc')], D: col[cabecalho.indexOf('opcaod')] },
-                    resposta: (col[cabecalho.indexOf('resposta')] || '').trim().toUpperCase(),
-                    obs: col[cabecalho.indexOf('observacao')] || ''
-                };
-            }).filter(p => p.pergunta);
+            dadosModulos = processarTSV(textoMod, false);
+            dadosPSP = processarTSV(textoPsp, true);
 
+            renderizarMenu();
             document.getElementById('loader').classList.add('escondido');
             document.getElementById('menu-inicial').classList.remove('escondido');
         } catch (e) {
-            document.getElementById('loader').innerText = "Erro ao carregar dados. Verifique a ligação.";
+            console.error(e);
+            document.getElementById('loader').innerText = "Erro ao carregar dados.";
         }
     }
 
-    function gerarExamePSP() {
-        // Lógica: Agrupar por tema e escolher uma pergunta aleatória de cada um (até 20)
-        const temasMap = {};
-        baseDados.forEach(p => {
-            if (!temasMap[p.tema]) temasMap[p.tema] = [];
-            temasMap[p.tema].push(p);
-        });
-
-        const temasDisponiveis = Object.keys(temasMap).sort(() => Math.random() - 0.5);
-        perguntasExame = temasDisponiveis.slice(0, 20).map(t => {
-            const lista = temasMap[t];
-            return lista[Math.floor(Math.random() * lista.length)];
-        });
-
-        iniciar();
+    function processarTSV(texto, ehEscolhaMultipla) {
+        const linhas = texto.split(/\r?\n/);
+        const cabecalho = linhas[0].split('\t').map(c => c.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""));
+        
+        return linhas.slice(1).map(linha => {
+            const col = linha.split('\t');
+            if (ehEscolhaMultipla) {
+                return {
+                    tema: col[cabecalho.indexOf('tema')],
+                    modulo: col[cabecalho.indexOf('modulo')],
+                    pergunta: col[cabecalho.indexOf('pergunta')],
+                    opcoes: { A: col[cabecalho.indexOf('opcaoa')], B: col[cabecalho.indexOf('opcaob')], C: col[cabecalho.indexOf('opcaoc')], D: col[cabecalho.indexOf('opcaod')] },
+                    resposta: (col[cabecalho.indexOf('resposta')] || '').trim().toUpperCase(),
+                    obs: col[cabecalho.indexOf('observacao')] || '',
+                    tipo: 'ABCD'
+                };
+            } else {
+                return {
+                    modulo: col[cabecalho.indexOf('modulo')],
+                    pergunta: col[cabecalho.indexOf('pergunta')],
+                    resposta: (col[cabecalho.indexOf('resposta')] || '').trim().toLowerCase(),
+                    obs: col[cabecalho.indexOf('observacao')] || '',
+                    tipo: 'VF'
+                };
+            }
+        }).filter(p => p.pergunta);
     }
 
-    function iniciar() {
-        index = 0; acertos = 0; historicoRespostas = [];
+    function renderizarMenu() {
+        const grid = document.getElementById('grid-modulos');
+        const modulosUnicos = [...new Set(dadosModulos.map(p => p.modulo))].sort();
+        
+        modulosUnicos.forEach(mod => {
+            const btn = document.createElement('button');
+            btn.className = 'btn-modulo';
+            btn.innerText = mod;
+            btn.onclick = () => iniciarEstudo(mod);
+            grid.appendChild(btn);
+        });
+    }
+
+    function iniciarEstudo(mod) {
+        perguntasAtuais = dadosModulos.filter(p => p.modulo === mod).sort(() => Math.random() - 0.5);
+        document.getElementById('titulo-pagina').innerText = "Estudo: " + mod;
+        comecar();
+    }
+
+    function gerarExamePSP() {
+        const temas = [...new Set(dadosPSP.map(p => p.tema))];
+        perguntasAtuais = temas.slice(0, 20).map(t => {
+            const opcoes = dadosPSP.filter(p => p.tema === t);
+            return opcoes[Math.floor(Math.random() * opcoes.length)];
+        }).sort(() => Math.random() - 0.5);
+        
+        document.getElementById('titulo-pagina').innerText = "Preparação para o Exame Final da PSP";
+        comecar();
+    }
+
+    function comecar() {
+        index = 0; acertos = 0; historico = [];
         document.getElementById('menu-inicial').classList.add('escondido');
         document.getElementById('ecra-quiz').classList.remove('escondido');
-        mostrarPergunta();
+        mostrar();
     }
 
-    function mostrarPergunta() {
-        const p = perguntasExame[index];
-        document.getElementById('txt-tema').innerText = `Tema: ${p.tema} (${p.modulo})`;
-        document.getElementById('txt-progresso').innerText = `Questão ${index + 1} de ${perguntasExame.length}`;
+    function mostrar() {
+        const p = perguntasAtuais[index];
+        document.getElementById('txt-modulo').innerText = p.modulo;
+        document.getElementById('txt-progresso').innerText = `${index + 1} de ${perguntasAtuais.length}`;
         document.getElementById('txt-pergunta').innerText = p.pergunta;
         
         const container = document.getElementById('container-opcoes');
         container.innerHTML = '';
         
-        ['A', 'B', 'C', 'D'].forEach(letra => {
-            if (p.opcoes[letra]) {
+        if (p.tipo === 'VF') {
+            ['verdadeiro', 'falso'].forEach(v => {
                 const btn = document.createElement('button');
                 btn.className = 'btn-opcao';
-                btn.innerHTML = `<strong>${letra})</strong> ${p.opcoes[letra]}`;
-                btn.onclick = () => verificar(letra);
+                btn.innerText = v.toUpperCase();
+                btn.onclick = () => verificar(v);
                 container.appendChild(btn);
-            }
-        });
-
+            });
+        } else {
+            ['A', 'B', 'C', 'D'].forEach(l => {
+                if (p.opcoes[l]) {
+                    const btn = document.createElement('button');
+                    btn.className = 'btn-opcao';
+                    btn.innerHTML = `<strong>${l})</strong> ${p.opcoes[l]}`;
+                    btn.onclick = () => verificar(l);
+                    container.appendChild(btn);
+                }
+            });
+        }
         document.getElementById('caixa-feedback').style.display = 'none';
         document.getElementById('btn-proxima').classList.add('escondido');
     }
 
     function verificar(escolha) {
-        const p = perguntasExame[index];
-        const correta = escolha === p.resposta;
+        const p = perguntasAtuais[index];
+        const correta = escolha.toString().toLowerCase() === p.resposta.toString().toLowerCase();
         if (correta) acertos++;
 
-        historicoRespostas.push({ 
-            pergunta: p.pergunta, 
-            modulo: p.modulo,
-            escolha: escolha, 
-            correta: p.resposta, 
-            obs: p.obs,
-            textoEscolha: p.opcoes[escolha],
-            textoCorreta: p.opcoes[p.resposta],
-            status: correta
-        });
+        historico.push({ ...p, escolha, status: correta });
 
         const fb = document.getElementById('caixa-feedback');
         fb.style.display = 'block';
         fb.className = `feedback ${correta ? 'correto' : 'errado'}`;
         fb.innerHTML = `<b>${correta ? '✓ ACERTOU' : '✗ ERROU'}</b><br>
-                        <b>Resposta Correta:</b> ${p.resposta}) ${p.opcoes[p.resposta]}<br>
+                        <b>Correta:</b> ${p.resposta.toUpperCase()}<br>
                         ${p.obs ? `<small><i>${p.obs}</i></small>` : ''}`;
 
         document.querySelectorAll('.btn-opcao').forEach(b => b.disabled = true);
@@ -202,56 +227,34 @@
 
     function proxima() {
         index++;
-        if (index < perguntasExame.length) mostrarPergunta();
+        if (index < perguntasAtuais.length) mostrar();
         else finalizar();
     }
 
     function finalizar() {
         document.getElementById('ecra-quiz').classList.add('escondido');
         document.getElementById('ecra-resultado').classList.remove('escondido');
-        
-        const total = perguntasExame.length;
-        const perc = Math.round((acertos / total) * 100);
-        const erros = total - acertos;
-
-        document.getElementById('score-percent').innerText = `${perc}%`;
-        document.getElementById('resumo-stats').innerText = `Perguntas: ${total} | Acertos: ${acertos} | Erros: ${erros}`;
-
-        let classe = "";
-        if (perc >= 90) classe = "Excelente! 🌟";
-        else if (perc >= 75) classe = "Muito Bom! 👍";
-        else if (perc >= 50) classe = "Suficiente ⚖️";
-        else classe = "Precisa de Reforço 📚";
-        
-        document.getElementById('txt-classificacao').innerText = classe;
-
-        if (erros > 0) document.getElementById('btn-ver-erros').classList.remove('escondido');
+        const perc = Math.round((acertos / perguntasAtuais.length) * 100);
+        document.getElementById('score-percent').innerText = perc + "%";
+        document.getElementById('resumo-stats').innerText = `Acertos: ${acertos} | Total: ${perguntasAtuais.length}`;
     }
 
     function mostrarRevisao() {
-        const lista = document.getElementById('lista-erros');
-        lista.innerHTML = '';
-        historicoRespostas.forEach((h, i) => {
-            if (!h.status) {
-                const div = document.createElement('div');
-                div.className = 'item-revisao';
-                div.innerHTML = `
-                    <b>Questão ${i + 1} [${h.modulo}]</b><br>
-                    <p>${h.pergunta}</p>
-                    <span style="color:var(--erro)">Sua resposta: ${h.escolha}) ${h.textoEscolha}</span><br>
-                    <span style="color:var(--sucesso)">Resposta certa: ${h.correta}) ${h.textoCorreta}</span><br>
-                    <p style="margin-top:8px; font-size:0.9rem; background:#f1f5f9; padding:10px; border-radius:5px;">
-                        <b>OBS:</b> ${h.obs || 'Sem observações adicionais.'}
-                    </p>
-                `;
-                lista.appendChild(div);
-            }
+        const zona = document.getElementById('zona-revisao');
+        zona.innerHTML = '<h3>Relatório Detalhado:</h3>';
+        historico.forEach((h, i) => {
+            const div = document.createElement('div');
+            div.className = 'item-revisao';
+            div.style.borderLeft = h.status ? '5px solid var(--sucesso)' : '5px solid var(--erro)';
+            div.innerHTML = `<b>Q${i+1}:</b> ${h.pergunta}<br>
+                             <small>Sua: ${h.escolha} | Correta: ${h.resposta}</small><br>
+                             <p style="font-size:0.85rem; margin-top:5px; color: #475569">Obs: ${h.obs}</p>`;
+            zona.appendChild(div);
         });
-        document.getElementById('zona-revisao').classList.remove('escondido');
-        window.scrollTo(0, document.body.scrollHeight);
+        zona.classList.remove('escondido');
     }
 
-    window.onload = carregarDados;
+    window.onload = carregarTudo;
 </script>
 </body>
 </html>
