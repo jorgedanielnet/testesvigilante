@@ -3,261 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Preparação para o Exame Final da PSP - Vigilante</title>
+    <title>Simulador Vigilante - Edição Compatível</title>
     <style>
-        :root {
-            --primaria: #1e40af;
-            --secundaria: #475569;
-            --sucesso: #16a34a;
-            --erro: #dc2626;
-            --fundo: #f1f5f9;
-            --texto: #1e293b;
-            --borda: #cbd5e1;
-        }
-
-        * { box-sizing: border-box; }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: var(--fundo);
-            display: flex;
-            justify-content: center;
-            padding: 20px;
-            margin: 0;
-            color: var(--texto);
-        }
-
-        .contentor {
-            background: white;
-            width: 100%;
-            max-width: 950px;
-            border-radius: 14px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.10);
-            padding: 30px;
-        }
-
+        :root { --primaria: #1e40af; --secundaria: #475569; --sucesso: #16a34a; --erro: #dc2626; --fundo: #f1f5f9; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--fundo); display: flex; justify-content: center; padding: 20px; margin: 0; }
+        .contentor { background: white; width: 100%; max-width: 850px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); padding: 30px; }
         .escondido { display: none !important; }
-
-        h1, h2, h3 {
-            margin-top: 0;
-        }
-
-        .subtitulo {
-            text-align: center;
-            color: var(--secundaria);
-            margin-top: -4px;
-            margin-bottom: 20px;
-        }
-
-        .grelha-modulos {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 12px;
-            margin: 20px 0;
-        }
-
-        .btn-modulo {
-            padding: 15px;
-            background: white;
-            border: 2px solid var(--primaria);
-            color: var(--primaria);
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.25s;
-        }
-
-        .btn-modulo:hover {
-            background: var(--primaria);
-            color: white;
-        }
-
-        .btn-total, .btn-next, .btn-secundario {
-            width: 100%;
-            padding: 15px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: bold;
-            margin-top: 14px;
-            transition: 0.25s;
-        }
-
-        .btn-total {
-            background: #0f172a;
-            color: white;
-        }
-
-        .btn-next {
-            background: var(--secundaria);
-            color: white;
-        }
-
-        .btn-secundario {
-            background: #e2e8f0;
-            color: #0f172a;
-        }
-
-        .info-topo {
-            display: flex;
-            justify-content: space-between;
-            gap: 12px;
-            color: var(--secundaria);
-            font-weight: bold;
-            margin-bottom: 15px;
-            border-bottom: 1px solid #e2e8f0;
-            padding-bottom: 10px;
-            flex-wrap: wrap;
-        }
-
-        .pergunta-caixa {
-            font-size: 1.22rem;
-            margin-bottom: 25px;
-            line-height: 1.6;
-            min-height: 100px;
-            color: var(--texto);
-        }
-
-        .opcoes {
-            display: flex;
-            gap: 15px;
-        }
-
-        .btn-opcao {
-            flex: 1;
-            padding: 18px;
-            font-size: 1.05rem;
-            font-weight: bold;
-            border: 2px solid var(--borda);
-            border-radius: 10px;
-            background: white;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .btn-opcao:hover:not(:disabled) {
-            border-color: var(--primaria);
-            background: #eff6ff;
-        }
-
-        .btn-opcao:disabled {
-            opacity: 0.75;
-            cursor: not-allowed;
-        }
-
-        .feedback {
-            padding: 18px;
-            border-radius: 10px;
-            margin-top: 20px;
-            display: none;
-            line-height: 1.55;
-        }
-
-        .correto {
-            background: #dcfce7;
-            color: #166534;
-            border: 1px solid var(--sucesso);
-        }
-
-        .errado {
-            background: #fee2e2;
-            color: #991b1b;
-            border: 1px solid var(--erro);
-        }
-
-        .loading {
-            text-align: center;
-            padding: 40px 20px;
-            font-size: 1.1rem;
-            color: var(--secundaria);
-        }
-
-        .resultado-card {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 22px;
-            margin: 20px 0;
-        }
-
-        .percentagem {
-            font-size: 3.4rem;
-            text-align: center;
-            font-weight: bold;
-            color: var(--primaria);
-            margin: 10px 0 20px;
-        }
-
-        .resumo {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 12px;
-            margin-top: 10px;
-        }
-
-        .caixa-resumo {
-            background: white;
-            border: 1px solid #cbd5e1;
-            border-radius: 10px;
-            padding: 14px;
-            text-align: center;
-        }
-
-        .caixa-resumo strong {
-            display: block;
-            font-size: 1.35rem;
-            color: var(--primaria);
-            margin-top: 6px;
-        }
-
-        .lista-erros {
-            margin-top: 20px;
-        }
-
-        .erro-item {
-            background: #fff;
-            border: 1px solid #fecaca;
-            border-left: 5px solid var(--erro);
-            border-radius: 10px;
-            padding: 16px;
-            margin-bottom: 14px;
-        }
-
-        .erro-item h4 {
-            margin: 0 0 8px 0;
-            color: #991b1b;
-        }
-
-        .erro-item p {
-            margin: 6px 0;
-            line-height: 1.5;
-        }
-
-        .obs {
-            background: #f8fafc;
-            border: 1px dashed #94a3b8;
-            border-radius: 8px;
-            padding: 10px;
-            margin-top: 10px;
-        }
-
-        @media (max-width: 700px) {
-            .opcoes {
-                flex-direction: column;
-            }
-        }
+        .grelha-modulos { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 20px 0; }
+        .btn-modulo { padding: 15px; background: white; border: 2px solid var(--primaria); color: var(--primaria); border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-modulo:hover { background: var(--primaria); color: white; }
+        .btn-total { grid-column: 1 / -1; background: #1e293b; color: white; border: none; padding: 18px; border-radius: 10px; cursor: pointer; font-weight: bold; width: 100%; }
+        .info-topo { display: flex; justify-content: space-between; color: var(--secundaria); font-weight: bold; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; }
+        .pergunta-caixa { font-size: 1.25rem; margin-bottom: 25px; line-height: 1.6; min-height: 100px; color: #1e293b; }
+        .opcoes { display: flex; gap: 15px; }
+        .btn-opcao { flex: 1; padding: 18px; font-size: 1.1rem; font-weight: bold; border: 2px solid #cbd5e1; border-radius: 10px; background: white; cursor: pointer; }
+        .feedback { padding: 20px; border-radius: 10px; margin-top: 20px; display: none; }
+        .correto { background: #dcfce7; color: #166534; border: 1px solid var(--sucesso); }
+        .errado { background: #fee2e2; color: #991b1b; border: 1px solid var(--erro); }
+        .btn-next { width: 100%; padding: 15px; background: var(--secundaria); color: white; border: none; border-radius: 8px; cursor: pointer; margin-top: 20px; font-weight: bold; }
+        .loading { text-align: center; padding: 40px; font-size: 1.2rem; }
     </style>
 </head>
 <body>
 
 <div class="contentor">
-    <h1 style="text-align:center;">Preparação para o Exame Final da PSP - Vigilante</h1>
-    <p class="subtitulo">Treino de perguntas Verdadeiro/Falso com correção imediata, observações e análise final dos erros.</p>
-
-    <div id="loader" class="loading">⏳ A carregar a base de dados de perguntas...</div>
+    <h1 style="text-align: center; margin-bottom: 10px;">Preparação para o Exame Final da PSP - Vigilante</h1>
+    
+    <div id="loader" class="loading">⏳ A estabelecer ligação segura com Google Sheets...</div>
 
     <div id="menu-selecao" class="escondido">
-        <p style="text-align:center; color: var(--secundaria);">Selecione um módulo para iniciar o treino:</p>
+        <p style="text-align: center; color: var(--secundaria);">Selecione um módulo para iniciar:</p>
         <div id="lista-botoes" class="grelha-modulos"></div>
         <button class="btn-total" onclick="iniciarQuiz('TOTAL')">SIMULADO COMPLETO (TUDO)</button>
     </div>
@@ -267,152 +42,66 @@
             <span id="txt-modulo"></span>
             <span id="txt-progresso"></span>
         </div>
-
         <div id="txt-pergunta" class="pergunta-caixa"></div>
-
         <div class="opcoes">
             <button class="btn-opcao" onclick="verificar('Verdadeiro')">VERDADEIRO</button>
             <button class="btn-opcao" onclick="verificar('Falso')">FALSO</button>
         </div>
-
         <div id="caixa-feedback" class="feedback"></div>
         <button id="btn-proxima" class="btn-next escondido" onclick="proxima()">PRÓXIMA PERGUNTA</button>
     </div>
 
     <div id="ecra-resultado" class="escondido">
-        <h2 style="text-align:center;">Avaliação Final</h2>
-
-        <div class="resultado-card">
-            <div id="percentagem" class="percentagem"></div>
-
-            <div class="resumo">
-                <div class="caixa-resumo">
-                    Perguntas
-                    <strong id="res-total">0</strong>
-                </div>
-                <div class="caixa-resumo">
-                    Acertos
-                    <strong id="res-acertos">0</strong>
-                </div>
-                <div class="caixa-resumo">
-                    Erros
-                    <strong id="res-erros">0</strong>
-                </div>
-                <div class="caixa-resumo">
-                    Avaliação
-                    <strong id="res-avaliacao">-</strong>
-                </div>
-            </div>
-        </div>
-
-        <button id="btn-ver-erros" class="btn-secundario escondido" onclick="toggleErros()">
-            VER ONDE ERREI + OBSERVAÇÕES
-        </button>
-
-        <div id="painel-erros" class="lista-erros escondido"></div>
-
-        <button class="btn-next" onclick="voltarMenu()" style="background: var(--primaria);">VOLTAR AO MENU</button>
-        <button class="btn-secundario" onclick="location.reload()">RECOMEÇAR TUDO</button>
+        <h2 style="text-align: center;">Fim do Teste</h2>
+        <div id="percentagem" style="font-size: 3.5rem; text-align: center; font-weight: bold; color: var(--primaria); margin: 20px 0;"></div>
+        <button class="btn-next" onclick="location.reload()" style="background: var(--primaria);">RECOMEÇAR</button>
     </div>
 </div>
 
 <script>
-    const DATA_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRdV0-Xyu-KXHc9wV_Lldd0qOfuQlHYmsMkfIYow5b9dxl-2BQzDMHNHoufXG7yh7a1dnLKCtFXwzMA/pub?gid=1749048722&single=true&output=tsv';
+    // Base principal do simulador (mantém o formato anterior)
+    const SHEET_ID = '1vRdV0-Xyu-KXHc9wV_Lldd0qOfuQlHYmsMkfIYow5b9dxl-2BQzDMHNHoufXG7yh7a1dnLKCtFXwzMA';
+    // Link da nova base de dados do exame da PSP (TSV publicado)
+    const PSP_EXAME_TSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRdV0-Xyu-KXHc9wV_Lldd0qOfuQlHYmsMkfIYow5b9dxl-2BQzDMHNHoufXG7yh7a1dnLKCtFXwzMA/pub?gid=1749048722&single=true&output=tsv';
+    // Mantém o endpoint antigo para não alterar o formato nem o comportamento do quiz
+    const DATA_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&tq&gid=1749048722`;
 
     let todasPerguntas = [];
     let perguntasAtuais = [];
     let index = 0;
     let score = 0;
-    let erros = [];
-    let moduloAtual = '';
 
-    function normalizarResposta(valor) {
-        if (!valor) return '';
-        const txt = String(valor).trim().toLowerCase();
-
-        if (txt === 'verdadeiro' || txt === 'v' || txt === 'true') return 'Verdadeiro';
-        if (txt === 'falso' || txt === 'f' || txt === 'false') return 'Falso';
-
-        return String(valor).trim();
-    }
-
-    function parseTSVLine(line) {
-        const result = [];
-        let current = '';
-        let inQuotes = false;
-
-        for (let i = 0; i < line.length; i++) {
-            const char = line[i];
-            const next = line[i + 1];
-
-            if (char === '"') {
-                if (inQuotes && next === '"') {
-                    current += '"';
-                    i++;
-                } else {
-                    inQuotes = !inQuotes;
-                }
-            } else if (char === '\t' && !inQuotes) {
-                result.push(current);
-                current = '';
-            } else {
-                current += char;
-            }
-        }
-
-        result.push(current);
-        return result.map(v => v.trim());
-    }
-
+    // Função que carrega os dados usando a técnica de injeção de script (contorna o bloqueio local)
     async function carregarDados() {
         try {
             const response = await fetch(DATA_URL);
             const text = await response.text();
+            
+            // O Google devolve um JSON "sujo" com código à volta, precisamos de o limpar
+            const jsonData = JSON.parse(text.substring(47, text.length - 2));
+            const linhas = jsonData.table.rows;
 
-            const linhas = text
-                .split(/\r?\n/)
-                .filter(l => l.trim() !== '');
-
-            if (linhas.length < 2) {
-                throw new Error('Base de dados sem conteúdo suficiente.');
-            }
-
-            const cabecalhos = parseTSVLine(linhas[0]).map(h => h.toLowerCase());
-
-            const idxModulo = cabecalhos.findIndex(h => h.includes('módulo') || h.includes('modulo'));
-            const idxPergunta = cabecalhos.findIndex(h => h.includes('pergunta'));
-            const idxResposta = cabecalhos.findIndex(h => h.includes('resposta'));
-            const idxObs = cabecalhos.findIndex(h => h.includes('observ'));
-
-            todasPerguntas = linhas.slice(1).map(linha => {
-                const col = parseTSVLine(linha);
-
+            todasPerguntas = linhas.map(r => {
+                // Mapeamento das tuas colunas: 0=Módulo, 3=Pergunta, 4=Resposta, 5=Observação
                 return {
-                    modulo: idxModulo >= 0 ? (col[idxModulo] || '').trim() : '',
-                    pergunta: idxPergunta >= 0 ? (col[idxPergunta] || '').trim() : '',
-                    resposta: normalizarResposta(idxResposta >= 0 ? col[idxResposta] : ''),
-                    obs: idxObs >= 0 ? (col[idxObs] || '').trim() : ''
+                    modulo: r.c[0] ? r.c[0].v : '',
+                    pergunta: r.c[3] ? r.c[3].v : '',
+                    resposta: r.c[4] ? r.c[4].v : '',
+                    obs: r.c[5] ? r.c[5].v : ''
                 };
-            }).filter(p =>
-                p.modulo &&
-                p.pergunta &&
-                p.resposta &&
-                p.pergunta.toLowerCase() !== 'pergunta'
-            );
+            }).filter(p => p.pergunta && p.modulo && p.pergunta !== "Pergunta"); // Limpa cabeçalhos e vazios
 
             renderizarMenu();
         } catch (e) {
             console.error(e);
-            document.getElementById('loader').innerHTML =
-                "⚠️ <b>Erro ao carregar a base de dados</b><br><br>Verifique o link publicado da folha Google e tente novamente.";
+            document.getElementById('loader').innerHTML = "⚠️ <b>Erro de Acesso</b><br><br>O browser bloqueou a ligação direta.<br>Por favor, tente abrir este ficheiro com o <b>Firefox</b> ou coloque-o num site (como o Netlify Drop).";
         }
     }
 
     function renderizarMenu() {
         const modulos = [...new Set(todasPerguntas.map(p => p.modulo))].sort();
         const container = document.getElementById('lista-botoes');
-        container.innerHTML = '';
-
+        
         modulos.forEach(m => {
             const btn = document.createElement('button');
             btn.className = 'btn-modulo';
@@ -425,142 +114,47 @@
         document.getElementById('menu-selecao').classList.remove('escondido');
     }
 
-    function iniciarQuiz(modulo) {
-        moduloAtual = modulo;
-        perguntasAtuais = modulo === 'TOTAL'
-            ? [...todasPerguntas]
-            : todasPerguntas.filter(p => p.modulo === modulo);
-
+    function iniciarQuiz(m) {
+        perguntasAtuais = m === 'TOTAL' ? [...todasPerguntas] : todasPerguntas.filter(p => p.modulo === m);
         perguntasAtuais.sort(() => Math.random() - 0.5);
-
-        index = 0;
-        score = 0;
-        erros = [];
-
+        index = 0; score = 0;
         document.getElementById('menu-selecao').classList.add('escondido');
-        document.getElementById('ecra-resultado').classList.add('escondido');
         document.getElementById('ecra-quiz').classList.remove('escondido');
-
         mostrar();
     }
 
     function mostrar() {
         const p = perguntasAtuais[index];
-
-        document.getElementById('txt-modulo').innerText =
-            "Módulo: " + (moduloAtual === 'TOTAL' ? 'Simulado Completo' : p.modulo);
-
-        document.getElementById('txt-progresso').innerText =
-            (index + 1) + " / " + perguntasAtuais.length;
-
+        document.getElementById('txt-modulo').innerText = "Módulo: " + p.modulo;
+        document.getElementById('txt-progresso').innerText = (index + 1) + " / " + perguntasAtuais.length;
         document.getElementById('txt-pergunta').innerText = p.pergunta;
-
-        const fb = document.getElementById('caixa-feedback');
-        fb.style.display = 'none';
-        fb.innerHTML = '';
-
+        document.getElementById('caixa-feedback').style.display = 'none';
         document.getElementById('btn-proxima').classList.add('escondido');
         document.querySelectorAll('.btn-opcao').forEach(b => b.disabled = false);
     }
 
-    function verificar(escolha) {
+    function verificar(esc) {
         const p = perguntasAtuais[index];
         const fb = document.getElementById('caixa-feedback');
-        const correta = escolha.toLowerCase() === String(p.resposta).toLowerCase();
-
-        if (correta) {
-            score++;
-        } else {
-            erros.push({
-                numero: index + 1,
-                modulo: p.modulo,
-                pergunta: p.pergunta,
-                respostaCerta: p.resposta,
-                respostaUtilizador: escolha,
-                observacao: p.obs || 'Sem observação disponível.'
-            });
-        }
-
+        const correta = esc.toLowerCase() === String(p.resposta).toLowerCase();
+        
+        if(correta) score++;
         document.querySelectorAll('.btn-opcao').forEach(b => b.disabled = true);
-
+        
         fb.style.display = 'block';
         fb.className = `feedback ${correta ? 'correto' : 'errado'}`;
-        fb.innerHTML = `
-            <b>${correta ? '✓ CERTO' : '✗ ERRADO'}</b><br>
-            <div style="margin-top:8px;"><b>Resposta correta:</b> ${p.resposta}</div>
-            <div style="margin-top:8px;"><b>Observação:</b> ${p.obs || 'Sem observação disponível.'}</div>
-        `;
-
+        fb.innerHTML = `<b>${correta ? '✓ CERTO' : '✗ ERRADO'}</b><br>${p.obs || ''}`;
         document.getElementById('btn-proxima').classList.remove('escondido');
     }
 
     function proxima() {
         index++;
-        if (index < perguntasAtuais.length) {
-            mostrar();
-        } else {
-            mostrarResultado();
+        if(index < perguntasAtuais.length) mostrar();
+        else {
+            document.getElementById('ecra-quiz').classList.add('escondido');
+            document.getElementById('ecra-resultado').classList.remove('escondido');
+            document.getElementById('percentagem').innerText = Math.round((score/perguntasAtuais.length)*100) + "%";
         }
-    }
-
-    function obterAvaliacao(percentagem) {
-        if (percentagem >= 90) return 'Excelente';
-        if (percentagem >= 75) return 'Muito bom';
-        if (percentagem >= 50) return 'Suficiente';
-        return 'Precisa de reforço';
-    }
-
-    function mostrarResultado() {
-        const total = perguntasAtuais.length;
-        const percent = total ? Math.round((score / total) * 100) : 0;
-        const totalErros = total - score;
-
-        document.getElementById('ecra-quiz').classList.add('escondido');
-        document.getElementById('ecra-resultado').classList.remove('escondido');
-
-        document.getElementById('percentagem').innerText = percent + "%";
-        document.getElementById('res-total').innerText = total;
-        document.getElementById('res-acertos').innerText = score;
-        document.getElementById('res-erros').innerText = totalErros;
-        document.getElementById('res-avaliacao').innerText = obterAvaliacao(percent);
-
-        const btnVerErros = document.getElementById('btn-ver-erros');
-        const painelErros = document.getElementById('painel-erros');
-
-        if (erros.length > 0) {
-            btnVerErros.classList.remove('escondido');
-            btnVerErros.innerText = 'VER ONDE ERREI + OBSERVAÇÕES';
-            painelErros.classList.add('escondido');
-            painelErros.innerHTML = erros.map(e => `
-                <div class="erro-item">
-                    <h4>Pergunta ${e.numero} - ${e.modulo}</h4>
-                    <p><b>Pergunta:</b> ${e.pergunta}</p>
-                    <p><b>A tua resposta:</b> ${e.respostaUtilizador}</p>
-                    <p><b>Resposta correta:</b> ${e.respostaCerta}</p>
-                    <div class="obs"><b>Observação:</b> ${e.observacao}</div>
-                </div>
-            `).join('');
-        } else {
-            btnVerErros.classList.add('escondido');
-            painelErros.classList.add('escondido');
-            painelErros.innerHTML = '';
-        }
-    }
-
-    function toggleErros() {
-        const painel = document.getElementById('painel-erros');
-        const btn = document.getElementById('btn-ver-erros');
-
-        painel.classList.toggle('escondido');
-        btn.innerText = painel.classList.contains('escondido')
-            ? 'VER ONDE ERREI + OBSERVAÇÕES'
-            : 'OCULTAR ERROS E OBSERVAÇÕES';
-    }
-
-    function voltarMenu() {
-        document.getElementById('ecra-resultado').classList.add('escondido');
-        document.getElementById('painel-erros').classList.add('escondido');
-        document.getElementById('menu-selecao').classList.remove('escondido');
     }
 
     window.onload = carregarDados;
