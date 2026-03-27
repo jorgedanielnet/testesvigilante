@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador Vigilante</title>
+    <title>Preparação para o Exame Final da PSP - Vigilante</title>
     <style>
         :root {
             --primaria: #1e40af;
@@ -11,7 +11,11 @@
             --sucesso: #16a34a;
             --erro: #dc2626;
             --fundo: #f1f5f9;
+            --texto: #1e293b;
+            --borda: #cbd5e1;
         }
+
+        * { box-sizing: border-box; }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -20,39 +24,36 @@
             justify-content: center;
             padding: 20px;
             margin: 0;
+            color: var(--texto);
         }
 
         .contentor {
             background: white;
             width: 100%;
             max-width: 950px;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-radius: 14px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.10);
             padding: 30px;
         }
 
-        .escondido {
-            display: none !important;
+        .escondido { display: none !important; }
+
+        h1, h2, h3 {
+            margin-top: 0;
         }
 
-        .secao-grupo {
-            margin: 24px 0 10px 0;
-        }
-
-        .titulo-grupo {
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: #1e293b;
-            margin-bottom: 12px;
-            padding-bottom: 6px;
-            border-bottom: 2px solid #e2e8f0;
+        .subtitulo {
+            text-align: center;
+            color: var(--secundaria);
+            margin-top: -4px;
+            margin-bottom: 20px;
         }
 
         .grelha-modulos {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 12px;
-            margin-bottom: 10px;
+            margin: 20px 0;
         }
 
         .btn-modulo {
@@ -63,7 +64,7 @@
             border-radius: 10px;
             cursor: pointer;
             font-weight: bold;
-            transition: 0.3s;
+            transition: 0.25s;
         }
 
         .btn-modulo:hover {
@@ -71,77 +72,50 @@
             color: white;
         }
 
-        .btn-grupo {
+        .btn-total, .btn-next, .btn-secundario {
             width: 100%;
             padding: 15px;
-            background: #334155;
-            color: white;
             border: none;
             border-radius: 10px;
             cursor: pointer;
             font-weight: bold;
-            margin: 8px 0 6px 0;
-        }
-
-        .btn-grupo:hover {
-            background: #1e293b;
+            margin-top: 14px;
+            transition: 0.25s;
         }
 
         .btn-total {
             background: #0f172a;
             color: white;
-            border: none;
-            padding: 18px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: bold;
-            width: 100%;
-            margin-top: 20px;
+        }
+
+        .btn-next {
+            background: var(--secundaria);
+            color: white;
+        }
+
+        .btn-secundario {
+            background: #e2e8f0;
+            color: #0f172a;
         }
 
         .info-topo {
             display: flex;
             justify-content: space-between;
+            gap: 12px;
             color: var(--secundaria);
             font-weight: bold;
             margin-bottom: 15px;
             border-bottom: 1px solid #e2e8f0;
             padding-bottom: 10px;
-            gap: 10px;
             flex-wrap: wrap;
-        }
-
-        .etiquetas {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 12px;
-        }
-
-        .etiqueta {
-            display: inline-block;
-            padding: 6px 10px;
-            border-radius: 999px;
-            font-size: 0.9rem;
-            font-weight: bold;
-        }
-
-        .etiqueta-modulo {
-            background: #dbeafe;
-            color: #1d4ed8;
-        }
-
-        .etiqueta-origem {
-            background: #ede9fe;
-            color: #6d28d9;
         }
 
         .pergunta-caixa {
-            font-size: 1.25rem;
+            font-size: 1.22rem;
             margin-bottom: 25px;
             line-height: 1.6;
             min-height: 100px;
-            color: #1e293b;
+            color: var(--texto);
         }
 
         .opcoes {
@@ -152,24 +126,31 @@
         .btn-opcao {
             flex: 1;
             padding: 18px;
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             font-weight: bold;
-            border: 2px solid #cbd5e1;
+            border: 2px solid var(--borda);
             border-radius: 10px;
             background: white;
             cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-opcao:hover:not(:disabled) {
+            border-color: var(--primaria);
+            background: #eff6ff;
         }
 
         .btn-opcao:disabled {
-            opacity: 0.65;
+            opacity: 0.75;
             cursor: not-allowed;
         }
 
         .feedback {
-            padding: 20px;
+            padding: 18px;
             border-radius: 10px;
             margin-top: 20px;
             display: none;
+            line-height: 1.55;
         }
 
         .correto {
@@ -184,87 +165,107 @@
             border: 1px solid var(--erro);
         }
 
-        .btn-next {
-            width: 100%;
-            padding: 15px;
-            background: var(--secundaria);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-top: 20px;
-            font-weight: bold;
-        }
-
-        .btn-menu {
-            width: 100%;
-            padding: 15px;
-            background: #0f172a;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-top: 12px;
-            font-weight: bold;
-        }
-
         .loading {
             text-align: center;
-            padding: 40px;
-            font-size: 1.05rem;
-            line-height: 1.6;
+            padding: 40px 20px;
+            font-size: 1.1rem;
+            color: var(--secundaria);
         }
 
-        .nota {
-            font-size: 0.95rem;
-            color: #64748b;
+        .resultado-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 22px;
+            margin: 20px 0;
+        }
+
+        .percentagem {
+            font-size: 3.4rem;
+            text-align: center;
+            font-weight: bold;
+            color: var(--primaria);
+            margin: 10px 0 20px;
+        }
+
+        .resumo {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
             margin-top: 10px;
+        }
+
+        .caixa-resumo {
+            background: white;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 14px;
+            text-align: center;
+        }
+
+        .caixa-resumo strong {
+            display: block;
+            font-size: 1.35rem;
+            color: var(--primaria);
+            margin-top: 6px;
+        }
+
+        .lista-erros {
+            margin-top: 20px;
+        }
+
+        .erro-item {
+            background: #fff;
+            border: 1px solid #fecaca;
+            border-left: 5px solid var(--erro);
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 14px;
+        }
+
+        .erro-item h4 {
+            margin: 0 0 8px 0;
+            color: #991b1b;
+        }
+
+        .erro-item p {
+            margin: 6px 0;
+            line-height: 1.5;
+        }
+
+        .obs {
+            background: #f8fafc;
+            border: 1px dashed #94a3b8;
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 700px) {
+            .opcoes {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 <body>
 
 <div class="contentor">
-    <h1 style="text-align: center; margin-bottom: 10px;">Simulador Vigilante</h1>
+    <h1 style="text-align:center;">Preparação para o Exame Final da PSP - Vigilante</h1>
+    <p class="subtitulo">Treino de perguntas Verdadeiro/Falso com correção imediata, observações e análise final dos erros.</p>
 
-    <div id="loader" class="loading">
-        ⏳ A carregar perguntas...
-        <div class="nota">A ler CSV publicado da Google Sheet...</div>
-    </div>
+    <div id="loader" class="loading">⏳ A carregar a base de dados de perguntas...</div>
 
     <div id="menu-selecao" class="escondido">
-        <p style="text-align: center; color: var(--secundaria);">Selecione um módulo para iniciar:</p>
-
-        <div class="secao-grupo">
-            <div class="titulo-grupo">BAS — Formação Base</div>
-            <div id="lista-bas" class="grelha-modulos"></div>
-            <button class="btn-grupo" onclick="iniciarQuiz('GRUPO_BAS')">SIMULADO BAS (20)</button>
-        </div>
-
-        <div class="secao-grupo">
-            <div class="titulo-grupo">VIG — Vigilante</div>
-            <div id="lista-vig" class="grelha-modulos"></div>
-            <button class="btn-grupo" onclick="iniciarQuiz('GRUPO_VIG')">SIMULADO VIG (20)</button>
-        </div>
-
-        <div class="secao-grupo">
-            <div class="titulo-grupo">ALM — Alarmista</div>
-            <div id="lista-alm" class="grelha-modulos"></div>
-            <button class="btn-grupo" onclick="iniciarQuiz('GRUPO_ALM')">SIMULADO ALM (20)</button>
-        </div>
-
-        <button class="btn-total" onclick="iniciarQuiz('TOTAL')">SIMULADO COMPLETO (25)</button>
+        <p style="text-align:center; color: var(--secundaria);">Selecione um módulo para iniciar o treino:</p>
+        <div id="lista-botoes" class="grelha-modulos"></div>
+        <button class="btn-total" onclick="iniciarQuiz('TOTAL')">SIMULADO COMPLETO (TUDO)</button>
     </div>
 
     <div id="ecra-quiz" class="escondido">
         <div class="info-topo">
             <span id="txt-modulo"></span>
             <span id="txt-progresso"></span>
-        </div>
-
-        <div class="etiquetas">
-            <span id="etiqueta-modulo" class="etiqueta etiqueta-modulo"></span>
-            <span id="etiqueta-origem" class="etiqueta etiqueta-origem"></span>
         </div>
 
         <div id="txt-pergunta" class="pergunta-caixa"></div>
@@ -276,47 +277,82 @@
 
         <div id="caixa-feedback" class="feedback"></div>
         <button id="btn-proxima" class="btn-next escondido" onclick="proxima()">PRÓXIMA PERGUNTA</button>
-        <button class="btn-menu" onclick="voltarMenu()">VOLTAR AO MENU</button>
     </div>
 
     <div id="ecra-resultado" class="escondido">
-        <h2 style="text-align: center;">Fim do Teste</h2>
-        <div id="percentagem" style="font-size: 3.5rem; text-align: center; font-weight: bold; color: var(--primaria); margin: 20px 0;"></div>
-        <div id="resumo-final" style="text-align: center; color: var(--secundaria); font-weight: bold; margin-bottom: 20px;"></div>
-        <button class="btn-next" onclick="location.reload()" style="background: var(--primaria);">RECOMEÇAR</button>
-        <button class="btn-menu" onclick="voltarMenu()">VOLTAR AO MENU</button>
+        <h2 style="text-align:center;">Avaliação Final</h2>
+
+        <div class="resultado-card">
+            <div id="percentagem" class="percentagem"></div>
+
+            <div class="resumo">
+                <div class="caixa-resumo">
+                    Perguntas
+                    <strong id="res-total">0</strong>
+                </div>
+                <div class="caixa-resumo">
+                    Acertos
+                    <strong id="res-acertos">0</strong>
+                </div>
+                <div class="caixa-resumo">
+                    Erros
+                    <strong id="res-erros">0</strong>
+                </div>
+                <div class="caixa-resumo">
+                    Avaliação
+                    <strong id="res-avaliacao">-</strong>
+                </div>
+            </div>
+        </div>
+
+        <button id="btn-ver-erros" class="btn-secundario escondido" onclick="toggleErros()">
+            VER ONDE ERREI + OBSERVAÇÕES
+        </button>
+
+        <div id="painel-erros" class="lista-erros escondido"></div>
+
+        <button class="btn-next" onclick="voltarMenu()" style="background: var(--primaria);">VOLTAR AO MENU</button>
+        <button class="btn-secundario" onclick="location.reload()">RECOMEÇAR TUDO</button>
     </div>
 </div>
 
 <script>
-    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRdV0-Xyu-KXHc9wV_Lldd0qOfuQlHYmsMkfIYow5b9dxl-2BQzDMHNHoufXG7yh7a1dnLKCtFXwzMA/pub?gid=0&single=true&output=csv';
-
-    const LIMITE_MODULO = 10;
-    const LIMITE_GRUPO = 20;
-    const LIMITE_TOTAL = 25;
+    const DATA_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRdV0-Xyu-KXHc9wV_Lldd0qOfuQlHYmsMkfIYow5b9dxl-2BQzDMHNHoufXG7yh7a1dnLKCtFXwzMA/pub?gid=1749048722&single=true&output=tsv';
 
     let todasPerguntas = [];
     let perguntasAtuais = [];
     let index = 0;
     let score = 0;
+    let erros = [];
+    let moduloAtual = '';
 
-    function parseCSVLine(line) {
+    function normalizarResposta(valor) {
+        if (!valor) return '';
+        const txt = String(valor).trim().toLowerCase();
+
+        if (txt === 'verdadeiro' || txt === 'v' || txt === 'true') return 'Verdadeiro';
+        if (txt === 'falso' || txt === 'f' || txt === 'false') return 'Falso';
+
+        return String(valor).trim();
+    }
+
+    function parseTSVLine(line) {
         const result = [];
         let current = '';
         let inQuotes = false;
 
         for (let i = 0; i < line.length; i++) {
             const char = line[i];
-            const nextChar = line[i + 1];
+            const next = line[i + 1];
 
             if (char === '"') {
-                if (inQuotes && nextChar === '"') {
+                if (inQuotes && next === '"') {
                     current += '"';
                     i++;
                 } else {
                     inQuotes = !inQuotes;
                 }
-            } else if (char === ',' && !inQuotes) {
+            } else if (char === '\t' && !inQuotes) {
                 result.push(current);
                 current = '';
             } else {
@@ -325,174 +361,81 @@
         }
 
         result.push(current);
-        return result;
-    }
-
-    function parseCSV(text) {
-        const linhas = [];
-        let linhaAtual = '';
-        let dentroAspas = false;
-
-        for (let i = 0; i < text.length; i++) {
-            const char = text[i];
-            const nextChar = text[i + 1];
-
-            if (char === '"') {
-                if (dentroAspas && nextChar === '"') {
-                    linhaAtual += '"';
-                    i++;
-                } else {
-                    dentroAspas = !dentroAspas;
-                    linhaAtual += char;
-                }
-            } else if ((char === '\n' || char === '\r') && !dentroAspas) {
-                if (linhaAtual.trim()) {
-                    linhas.push(parseCSVLine(linhaAtual));
-                }
-                linhaAtual = '';
-
-                if (char === '\r' && nextChar === '\n') i++;
-            } else {
-                linhaAtual += char;
-            }
-        }
-
-        if (linhaAtual.trim()) {
-            linhas.push(parseCSVLine(linhaAtual));
-        }
-
-        return linhas;
-    }
-
-    function ordenarModulos(lista) {
-        return lista.sort((a, b) => {
-            const ma = a.match(/(\D+)\s*(\d+)/);
-            const mb = b.match(/(\D+)\s*(\d+)/);
-
-            if (!ma || !mb) return a.localeCompare(b, 'pt');
-
-            const grupoA = ma[1].trim();
-            const grupoB = mb[1].trim();
-            const numA = parseInt(ma[2], 10);
-            const numB = parseInt(mb[2], 10);
-
-            if (grupoA !== grupoB) return grupoA.localeCompare(grupoB, 'pt');
-            return numA - numB;
-        });
-    }
-
-    function baralhar(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
-        }
-        return array;
-    }
-
-    function limitarAleatorias(lista, limite) {
-        const copia = [...lista];
-        baralhar(copia);
-        return copia.slice(0, Math.min(limite, copia.length));
+        return result.map(v => v.trim());
     }
 
     async function carregarDados() {
         try {
-            const response = await fetch(CSV_URL, { cache: 'no-store' });
+            const response = await fetch(DATA_URL);
+            const text = await response.text();
 
-            if (!response.ok) {
-                throw new Error(`Falha HTTP: ${response.status}`);
+            const linhas = text
+                .split(/\r?\n/)
+                .filter(l => l.trim() !== '');
+
+            if (linhas.length < 2) {
+                throw new Error('Base de dados sem conteúdo suficiente.');
             }
 
-            const csvText = await response.text();
-            const linhas = parseCSV(csvText);
+            const cabecalhos = parseTSVLine(linhas[0]).map(h => h.toLowerCase());
 
-            if (!linhas.length || linhas.length < 2) {
-                throw new Error('O CSV está vazio ou não contém perguntas.');
-            }
+            const idxModulo = cabecalhos.findIndex(h => h.includes('módulo') || h.includes('modulo'));
+            const idxPergunta = cabecalhos.findIndex(h => h.includes('pergunta'));
+            const idxResposta = cabecalhos.findIndex(h => h.includes('resposta'));
+            const idxObs = cabecalhos.findIndex(h => h.includes('observ'));
 
-            const cabecalho = linhas[0].map(c => c.trim().toLowerCase());
-            const idxModulo = cabecalho.indexOf('módulo') !== -1 ? cabecalho.indexOf('módulo') : cabecalho.indexOf('modulo');
-            const idxOrigem = cabecalho.indexOf('origem');
-            const idxPergunta = cabecalho.indexOf('pergunta');
-            const idxResposta = cabecalho.indexOf('resposta');
-            const idxObs = cabecalho.indexOf('observação') !== -1 ? cabecalho.indexOf('observação') : cabecalho.indexOf('observacao');
+            todasPerguntas = linhas.slice(1).map(linha => {
+                const col = parseTSVLine(linha);
 
-            if (idxModulo === -1 || idxOrigem === -1 || idxPergunta === -1 || idxResposta === -1) {
-                throw new Error('O CSV não tem as colunas esperadas: Módulo, Origem, Pergunta e Resposta.');
-            }
-
-            todasPerguntas = linhas.slice(1).map(colunas => ({
-                modulo: (colunas[idxModulo] || '').trim(),
-                origem: (colunas[idxOrigem] || '').trim(),
-                pergunta: (colunas[idxPergunta] || '').trim(),
-                resposta: (colunas[idxResposta] || '').trim(),
-                obs: idxObs !== -1 ? (colunas[idxObs] || '').trim() : ''
-            })).filter(p => p.modulo && p.origem && p.pergunta && p.resposta);
-
-            if (!todasPerguntas.length) {
-                throw new Error('Não foram encontradas perguntas válidas no CSV.');
-            }
+                return {
+                    modulo: idxModulo >= 0 ? (col[idxModulo] || '').trim() : '',
+                    pergunta: idxPergunta >= 0 ? (col[idxPergunta] || '').trim() : '',
+                    resposta: normalizarResposta(idxResposta >= 0 ? col[idxResposta] : ''),
+                    obs: idxObs >= 0 ? (col[idxObs] || '').trim() : ''
+                };
+            }).filter(p =>
+                p.modulo &&
+                p.pergunta &&
+                p.resposta &&
+                p.pergunta.toLowerCase() !== 'pergunta'
+            );
 
             renderizarMenu();
-        } catch (erro) {
-            console.error(erro);
-            document.getElementById('loader').innerHTML = `
-                ⚠️ <b>Erro de acesso aos dados</b><br><br>
-                Verifique estes pontos:<br>
-                1. O link CSV publicado está correto;<br>
-                2. A folha foi realmente <b>publicada na web</b>;<br>
-                3. O <b>gid=0</b> corresponde à folha certa;<br>
-                4. O browser ou o site não estão a bloquear o pedido.<br><br>
-                <span style="font-size: 0.95rem; color: #64748b;">Detalhe técnico: ${erro.message}</span>
-            `;
+        } catch (e) {
+            console.error(e);
+            document.getElementById('loader').innerHTML =
+                "⚠️ <b>Erro ao carregar a base de dados</b><br><br>Verifique o link publicado da folha Google e tente novamente.";
         }
     }
 
-    function criarBotoes(modulos, elementoId) {
-        const container = document.getElementById(elementoId);
+    function renderizarMenu() {
+        const modulos = [...new Set(todasPerguntas.map(p => p.modulo))].sort();
+        const container = document.getElementById('lista-botoes');
         container.innerHTML = '';
 
         modulos.forEach(m => {
             const btn = document.createElement('button');
             btn.className = 'btn-modulo';
-            btn.innerText = `${m} (${Math.min(LIMITE_MODULO, todasPerguntas.filter(p => p.modulo === m).length)})`;
+            btn.innerText = m;
             btn.onclick = () => iniciarQuiz(m);
             container.appendChild(btn);
         });
-    }
-
-    function renderizarMenu() {
-        const modulos = [...new Set(todasPerguntas.map(p => p.modulo))];
-
-        const bas = ordenarModulos(modulos.filter(m => m.startsWith('BAS')));
-        const vig = ordenarModulos(modulos.filter(m => m.startsWith('VIG')));
-        const alm = ordenarModulos(modulos.filter(m => m.startsWith('ALM')));
-
-        criarBotoes(bas, 'lista-bas');
-        criarBotoes(vig, 'lista-vig');
-        criarBotoes(alm, 'lista-alm');
 
         document.getElementById('loader').classList.add('escondido');
         document.getElementById('menu-selecao').classList.remove('escondido');
-        document.getElementById('ecra-quiz').classList.add('escondido');
-        document.getElementById('ecra-resultado').classList.add('escondido');
     }
 
-    function iniciarQuiz(tipo) {
-        if (tipo === 'TOTAL') {
-            perguntasAtuais = limitarAleatorias(todasPerguntas, LIMITE_TOTAL);
-        } else if (tipo === 'GRUPO_BAS') {
-            perguntasAtuais = limitarAleatorias(todasPerguntas.filter(p => p.modulo.startsWith('BAS')), LIMITE_GRUPO);
-        } else if (tipo === 'GRUPO_VIG') {
-            perguntasAtuais = limitarAleatorias(todasPerguntas.filter(p => p.modulo.startsWith('VIG')), LIMITE_GRUPO);
-        } else if (tipo === 'GRUPO_ALM') {
-            perguntasAtuais = limitarAleatorias(todasPerguntas.filter(p => p.modulo.startsWith('ALM')), LIMITE_GRUPO);
-        } else {
-            perguntasAtuais = limitarAleatorias(todasPerguntas.filter(p => p.modulo === tipo), LIMITE_MODULO);
-        }
+    function iniciarQuiz(modulo) {
+        moduloAtual = modulo;
+        perguntasAtuais = modulo === 'TOTAL'
+            ? [...todasPerguntas]
+            : todasPerguntas.filter(p => p.modulo === modulo);
+
+        perguntasAtuais.sort(() => Math.random() - 0.5);
 
         index = 0;
         score = 0;
+        erros = [];
 
         document.getElementById('menu-selecao').classList.add('escondido');
         document.getElementById('ecra-resultado').classList.add('escondido');
@@ -504,16 +447,17 @@
     function mostrar() {
         const p = perguntasAtuais[index];
 
-        document.getElementById('txt-modulo').innerText = 'Módulo: ' + p.modulo;
-        document.getElementById('txt-progresso').innerText = (index + 1) + ' / ' + perguntasAtuais.length;
-        document.getElementById('etiqueta-modulo').innerText = p.modulo;
-        document.getElementById('etiqueta-origem').innerText = p.origem;
+        document.getElementById('txt-modulo').innerText =
+            "Módulo: " + (moduloAtual === 'TOTAL' ? 'Simulado Completo' : p.modulo);
+
+        document.getElementById('txt-progresso').innerText =
+            (index + 1) + " / " + perguntasAtuais.length;
+
         document.getElementById('txt-pergunta').innerText = p.pergunta;
 
         const fb = document.getElementById('caixa-feedback');
         fb.style.display = 'none';
         fb.innerHTML = '';
-        fb.className = 'feedback';
 
         document.getElementById('btn-proxima').classList.add('escondido');
         document.querySelectorAll('.btn-opcao').forEach(b => b.disabled = false);
@@ -522,9 +466,20 @@
     function verificar(escolha) {
         const p = perguntasAtuais[index];
         const fb = document.getElementById('caixa-feedback');
-        const correta = escolha.trim().toLowerCase() === String(p.resposta).trim().toLowerCase();
+        const correta = escolha.toLowerCase() === String(p.resposta).toLowerCase();
 
-        if (correta) score++;
+        if (correta) {
+            score++;
+        } else {
+            erros.push({
+                numero: index + 1,
+                modulo: p.modulo,
+                pergunta: p.pergunta,
+                respostaCerta: p.resposta,
+                respostaUtilizador: escolha,
+                observacao: p.obs || 'Sem observação disponível.'
+            });
+        }
 
         document.querySelectorAll('.btn-opcao').forEach(b => b.disabled = true);
 
@@ -532,9 +487,8 @@
         fb.className = `feedback ${correta ? 'correto' : 'errado'}`;
         fb.innerHTML = `
             <b>${correta ? '✓ CERTO' : '✗ ERRADO'}</b><br>
-            <b>Origem:</b> ${p.origem}<br>
-            <b>Resposta correta:</b> ${p.resposta}<br>
-            ${p.obs ? `<br>${p.obs}` : ''}
+            <div style="margin-top:8px;"><b>Resposta correta:</b> ${p.resposta}</div>
+            <div style="margin-top:8px;"><b>Observação:</b> ${p.obs || 'Sem observação disponível.'}</div>
         `;
 
         document.getElementById('btn-proxima').classList.remove('escondido');
@@ -542,27 +496,74 @@
 
     function proxima() {
         index++;
-
         if (index < perguntasAtuais.length) {
             mostrar();
         } else {
-            document.getElementById('ecra-quiz').classList.add('escondido');
-            document.getElementById('ecra-resultado').classList.remove('escondido');
-
-            const percentagem = Math.round((score / perguntasAtuais.length) * 100);
-            document.getElementById('percentagem').innerText = percentagem + '%';
-            document.getElementById('resumo-final').innerText = `Acertos: ${score} em ${perguntasAtuais.length}`;
+            mostrarResultado();
         }
     }
 
-    function voltarMenu() {
+    function obterAvaliacao(percentagem) {
+        if (percentagem >= 90) return 'Excelente';
+        if (percentagem >= 75) return 'Muito bom';
+        if (percentagem >= 50) return 'Suficiente';
+        return 'Precisa de reforço';
+    }
+
+    function mostrarResultado() {
+        const total = perguntasAtuais.length;
+        const percent = total ? Math.round((score / total) * 100) : 0;
+        const totalErros = total - score;
+
         document.getElementById('ecra-quiz').classList.add('escondido');
+        document.getElementById('ecra-resultado').classList.remove('escondido');
+
+        document.getElementById('percentagem').innerText = percent + "%";
+        document.getElementById('res-total').innerText = total;
+        document.getElementById('res-acertos').innerText = score;
+        document.getElementById('res-erros').innerText = totalErros;
+        document.getElementById('res-avaliacao').innerText = obterAvaliacao(percent);
+
+        const btnVerErros = document.getElementById('btn-ver-erros');
+        const painelErros = document.getElementById('painel-erros');
+
+        if (erros.length > 0) {
+            btnVerErros.classList.remove('escondido');
+            btnVerErros.innerText = 'VER ONDE ERREI + OBSERVAÇÕES';
+            painelErros.classList.add('escondido');
+            painelErros.innerHTML = erros.map(e => `
+                <div class="erro-item">
+                    <h4>Pergunta ${e.numero} - ${e.modulo}</h4>
+                    <p><b>Pergunta:</b> ${e.pergunta}</p>
+                    <p><b>A tua resposta:</b> ${e.respostaUtilizador}</p>
+                    <p><b>Resposta correta:</b> ${e.respostaCerta}</p>
+                    <div class="obs"><b>Observação:</b> ${e.observacao}</div>
+                </div>
+            `).join('');
+        } else {
+            btnVerErros.classList.add('escondido');
+            painelErros.classList.add('escondido');
+            painelErros.innerHTML = '';
+        }
+    }
+
+    function toggleErros() {
+        const painel = document.getElementById('painel-erros');
+        const btn = document.getElementById('btn-ver-erros');
+
+        painel.classList.toggle('escondido');
+        btn.innerText = painel.classList.contains('escondido')
+            ? 'VER ONDE ERREI + OBSERVAÇÕES'
+            : 'OCULTAR ERROS E OBSERVAÇÕES';
+    }
+
+    function voltarMenu() {
         document.getElementById('ecra-resultado').classList.add('escondido');
+        document.getElementById('painel-erros').classList.add('escondido');
         document.getElementById('menu-selecao').classList.remove('escondido');
     }
 
     window.onload = carregarDados;
 </script>
-
 </body>
 </html>
