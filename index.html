@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador Vigilante & Exame PSP</title>
+    <title>Preparação para o Exame Final da PSP - Vigilante</title>
     <style>
         :root {
             --primaria: #1e40af;
@@ -11,736 +11,247 @@
             --sucesso: #16a34a;
             --erro: #dc2626;
             --fundo: #f1f5f9;
-            --destaque-psp: #b91c1c; /* Vermelho para o Exame PSP */
+            --destaque-psp: #b91c1c;
         }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: var(--fundo);
-            display: flex;
-            justify-content: center;
-            padding: 20px;
-            margin: 0;
-        }
-
-        .contentor {
-            background: white;
-            width: 100%;
-            max-width: 950px;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            padding: 30px;
-        }
-
-        .escondido {
-            display: none !important;
-        }
-
-        .secao-grupo {
-            margin: 24px 0 10px 0;
-        }
-
-        .titulo-grupo {
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: #1e293b;
-            margin-bottom: 12px;
-            padding-bottom: 6px;
-            border-bottom: 2px solid #e2e8f0;
-        }
-
-        .grelha-modulos {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 12px;
-            margin-bottom: 10px;
-        }
-
-        .btn-modulo {
-            padding: 15px;
-            background: white;
-            border: 2px solid var(--primaria);
-            color: var(--primaria);
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-
-        .btn-modulo:hover {
-            background: var(--primaria);
-            color: white;
-        }
-
-        .btn-grupo {
-            width: 100%;
-            padding: 15px;
-            background: #334155;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: bold;
-            margin: 8px 0 6px 0;
-            transition: 0.3s;
-        }
-
-        .btn-grupo:hover {
-            background: #1e293b;
-        }
-
-        .btn-psp {
-            background: var(--destaque-psp);
-        }
-
-        .btn-psp:hover {
-            background: #991b1b;
-        }
-
-        .btn-total {
-            background: #0f172a;
-            color: white;
-            border: none;
-            padding: 18px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: bold;
-            width: 100%;
-            margin-top: 20px;
-        }
-
-        .info-topo {
-            display: flex;
-            justify-content: space-between;
-            color: var(--secundaria);
-            font-weight: bold;
-            margin-bottom: 15px;
-            border-bottom: 1px solid #e2e8f0;
-            padding-bottom: 10px;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .etiquetas {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 12px;
-        }
-
-        .etiqueta {
-            display: inline-block;
-            padding: 6px 10px;
-            border-radius: 999px;
-            font-size: 0.9rem;
-            font-weight: bold;
-        }
-
-        .etiqueta-modulo {
-            background: #dbeafe;
-            color: #1d4ed8;
-        }
-
-        .etiqueta-origem {
-            background: #ede9fe;
-            color: #6d28d9;
-        }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--fundo); display: flex; justify-content: center; padding: 20px; margin: 0; }
+        .contentor { background: white; width: 100%; max-width: 950px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); padding: 30px; }
+        .escondido { display: none !important; }
         
-        .etiqueta-psp {
-            background: #fee2e2;
-            color: #b91c1c;
-        }
+        /* Menu */
+        .btn-psp { width: 100%; padding: 20px; background: var(--destaque-psp); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 1.1rem; transition: 0.3s; margin-top: 20px; }
+        .btn-psp:hover { background: #991b1b; transform: translateY(-2px); }
 
-        .pergunta-caixa {
-            font-size: 1.25rem;
-            margin-bottom: 25px;
-            line-height: 1.6;
-            min-height: 100px;
-            color: #1e293b;
-        }
+        /* Quiz UI */
+        .info-topo { display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 15px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
+        .pergunta-caixa { font-size: 1.2rem; margin-bottom: 20px; line-height: 1.5; color: #1e293b; min-height: 80px; }
+        .opcoes-multiplas { display: flex; flex-direction: column; gap: 10px; }
+        .btn-opcao { padding: 15px; border: 2px solid #cbd5e1; border-radius: 8px; background: white; cursor: pointer; text-align: left; transition: 0.2s; font-size: 1rem; }
+        .btn-opcao:hover:not(:disabled) { border-color: var(--primaria); background: #f8fafc; }
+        
+        /* Feedback */
+        .feedback { padding: 15px; border-radius: 8px; margin-top: 15px; display: none; line-height: 1.4; }
+        .correto { background: #dcfce7; color: #166534; border: 1px solid var(--sucesso); }
+        .errado { background: #fee2e2; color: #991b1b; border: 1px solid var(--erro); }
 
-        /* Estilos para V/F */
-        .opcoes-vf {
-            display: flex;
-            gap: 15px;
-        }
-
-        .btn-opcao-vf {
-            flex: 1;
-            padding: 18px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            border: 2px solid #cbd5e1;
-            border-radius: 10px;
-            background: white;
-            cursor: pointer;
-        }
-
-        .btn-opcao-vf:hover:not(:disabled) {
-            background: #f8fafc;
-            border-color: var(--primaria);
-        }
-
-        /* Estilos para Escolha Múltipla (Exame PSP) */
-        .opcoes-multiplas {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .btn-opcao-multipla {
-            padding: 15px;
-            font-size: 1.05rem;
-            border: 2px solid #cbd5e1;
-            border-radius: 10px;
-            background: white;
-            cursor: pointer;
-            text-align: left;
-            transition: 0.2s;
-            line-height: 1.4;
-        }
-
-        .btn-opcao-multipla strong {
-            color: var(--primaria);
-            margin-right: 8px;
-        }
-
-        .btn-opcao-multipla:hover:not(:disabled) {
-            background: #f8fafc;
-            border-color: var(--primaria);
-        }
-
-        /* Botões Desativados */
-        button:disabled {
-            opacity: 0.65;
-            cursor: not-allowed !important;
-        }
-
-        .feedback {
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 20px;
-            display: none;
-        }
-
-        .correto {
-            background: #dcfce7;
-            color: #166534;
-            border: 1px solid var(--sucesso);
-        }
-
-        .errado {
-            background: #fee2e2;
-            color: #991b1b;
-            border: 1px solid var(--erro);
-        }
-
-        .btn-next {
-            width: 100%;
-            padding: 15px;
-            background: var(--secundaria);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-top: 20px;
-            font-weight: bold;
-        }
-
-        .btn-menu {
-            width: 100%;
-            padding: 15px;
-            background: #0f172a;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-top: 12px;
-            font-weight: bold;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 40px;
-            font-size: 1.05rem;
-            line-height: 1.6;
-        }
-
-        .nota {
-            font-size: 0.95rem;
-            color: #64748b;
-            margin-top: 10px;
-        }
+        /* Resultados */
+        .card-resultado { text-align: center; padding: 20px; }
+        .score-big { font-size: 4rem; font-weight: bold; color: var(--primaria); margin: 10px 0; }
+        .classificacao { font-size: 1.5rem; font-weight: bold; margin-bottom: 20px; }
+        
+        /* Tabela de Revisão */
+        .revisao-lista { margin-top: 20px; text-align: left; border-top: 2px solid #e2e8f0; padding-top: 20px; }
+        .item-revisao { padding: 15px; border-bottom: 1px solid #e2e8f0; margin-bottom: 10px; background: #fff; }
+        .item-revisao b { color: var(--destaque-psp); }
+        
+        .btn-acao { width: 100%; padding: 15px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        .btn-next { background: var(--primaria); color: white; }
+        .btn-revisao { background: var(--secundaria); color: white; }
     </style>
 </head>
 <body>
 
 <div class="contentor">
-    <h1 style="text-align: center; margin-bottom: 10px;">Simulador Vigilante</h1>
+    <h1 id="titulo-principal" style="text-align: center; color: var(--primaria);">Preparação para o Exame Final da PSP - Vigilante</h1>
 
-    <div id="loader" class="loading">
-        ⏳ A carregar bases de dados...
-        <div class="nota">A ler os dados publicados (Módulos e Exame PSP)...</div>
-    </div>
+    <div id="loader" style="text-align:center; padding: 50px;">⏳ A carregar base de dados oficial...</div>
 
-    <div id="menu-selecao" class="escondido">
-        <p style="text-align: center; color: var(--secundaria);">Selecione um módulo para iniciar:</p>
-
-        <div class="secao-grupo">
-            <div class="titulo-grupo" style="color: var(--destaque-psp);">Preparação PSP</div>
-            <button class="btn-grupo btn-psp" onclick="iniciarExamePSP()">PREPARAÇÃO PARA O EXAME FINAL DA PSP - VIGILANTE (50)</button>
-        </div>
-
-        <div class="secao-grupo">
-            <div class="titulo-grupo">BAS — Formação Base</div>
-            <div id="lista-bas" class="grelha-modulos"></div>
-            <button class="btn-grupo" onclick="iniciarQuiz('GRUPO_BAS')">SIMULADO BAS (20)</button>
-        </div>
-
-        <div class="secao-grupo">
-            <div class="titulo-grupo">VIG — Vigilante</div>
-            <div id="lista-vig" class="grelha-modulos"></div>
-            <button class="btn-grupo" onclick="iniciarQuiz('GRUPO_VIG')">SIMULADO VIG (20)</button>
-        </div>
-
-        <div class="secao-grupo">
-            <div class="titulo-grupo">ALM — Alarmista</div>
-            <div id="lista-alm" class="grelha-modulos"></div>
-            <button class="btn-grupo" onclick="iniciarQuiz('GRUPO_ALM')">SIMULADO ALM (20)</button>
-        </div>
-
-        <button class="btn-total" onclick="iniciarQuiz('TOTAL')">SIMULADO MISTO COMPLETO (25)</button>
+    <div id="menu-inicial" class="escondido">
+        <p style="text-align:center; color: var(--secundaria);">Este simulador gera um exame de 20 perguntas, selecionando aleatoriamente uma de cada tema da base de dados.</p>
+        <button class="btn-psp" onclick="gerarExamePSP()">INICIAR EXAME MODELO PSP (20 Questões)</button>
     </div>
 
     <div id="ecra-quiz" class="escondido">
         <div class="info-topo">
-            <span id="txt-modulo"></span>
+            <span id="txt-tema"></span>
             <span id="txt-progresso"></span>
         </div>
-
-        <div class="etiquetas">
-            <span id="etiqueta-modulo" class="etiqueta etiqueta-modulo"></span>
-            <span id="etiqueta-origem" class="etiqueta etiqueta-origem"></span>
-        </div>
-
         <div id="txt-pergunta" class="pergunta-caixa"></div>
-
-        <div id="container-opcoes">
-            </div>
-
+        <div id="container-opcoes" class="opcoes-multiplas"></div>
+        
         <div id="caixa-feedback" class="feedback"></div>
-        <button id="btn-proxima" class="btn-next escondido" onclick="proxima()">PRÓXIMA PERGUNTA</button>
-        <button class="btn-menu" onclick="voltarMenu()">VOLTAR AO MENU</button>
+        <button id="btn-proxima" class="btn-acao btn-next escondido" onclick="proxima()">PRÓXIMA PERGUNTA</button>
     </div>
 
     <div id="ecra-resultado" class="escondido">
-        <h2 style="text-align: center;">Fim do Teste</h2>
-        <div id="percentagem" style="font-size: 3.5rem; text-align: center; font-weight: bold; color: var(--primaria); margin: 20px 0;"></div>
-        <div id="resumo-final" style="text-align: center; color: var(--secundaria); font-weight: bold; margin-bottom: 20px;"></div>
-        <button class="btn-next" onclick="location.reload()" style="background: var(--primaria);">RECOMEÇAR</button>
-        <button class="btn-menu" onclick="voltarMenu()">VOLTAR AO MENU</button>
+        <div class="card-resultado">
+            <h2>Resultado Final</h2>
+            <div id="resumo-stats" style="color: var(--secundaria); font-weight: bold;"></div>
+            <div id="score-percent" class="score-big">0%</div>
+            <div id="txt-classificacao" class="classificacao"></div>
+            
+            <button class="btn-acao btn-next" onclick="location.reload()">NOVO EXAME</button>
+            <button id="btn-ver-erros" class="btn-acao btn-revisao escondido" onclick="mostrarRevisao()">VER ONDE ERREI + OBSERVAÇÕES</button>
+        </div>
+
+        <div id="zona-revisao" class="revisao-lista escondido">
+            <h3 style="color: var(--erro);">Relatório de Erros e Observações</h3>
+            <div id="lista-erros"></div>
+        </div>
     </div>
 </div>
 
 <script>
-    // URLs das bases de dados
-    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRdV0-Xyu-KXHc9wV_Lldd0qOfuQlHYmsMkfIYow5b9dxl-2BQzDMHNHoufXG7yh7a1dnLKCtFXwzMA/pub?gid=0&single=true&output=csv';
-    const TSV_PSP_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRdV0-Xyu-KXHc9wV_Lldd0qOfuQlHYmsMkfIYow5b9dxl-2BQzDMHNHoufXG7yh7a1dnLKCtFXwzMA/pub?gid=1749048722&single=true&output=tsv';
-
-    const LIMITE_MODULO = 10;
-    const LIMITE_GRUPO = 20;
-    const LIMITE_TOTAL = 25;
-    const LIMITE_EXAME_PSP = 50;
-
-    let todasPerguntasModulos = [];
-    let perguntasExamePSP = [];
+    const TSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRdV0-Xyu-KXHc9wV_Lldd0qOfuQlHYmsMkfIYow5b9dxl-2BQzDMHNHoufXG7yh7a1dnLKCtFXwzMA/pub?gid=1749048722&single=true&output=tsv';
     
-    let perguntasAtuais = [];
+    let baseDados = [];
+    let perguntasExame = [];
+    let historicoRespostas = [];
     let index = 0;
-    let score = 0;
+    let acertos = 0;
 
-    // --- Parser para CSV (Base Módulos) ---
-    function parseCSVLine(line) {
-        const result = [];
-        let current = '';
-        let inQuotes = false;
-
-        for (let i = 0; i < line.length; i++) {
-            const char = line[i];
-            const nextChar = line[i + 1];
-
-            if (char === '"') {
-                if (inQuotes && nextChar === '"') {
-                    current += '"';
-                    i++;
-                } else {
-                    inQuotes = !inQuotes;
-                }
-            } else if (char === ',' && !inQuotes) {
-                result.push(current);
-                current = '';
-            } else {
-                current += char;
-            }
-        }
-        result.push(current);
-        return result;
-    }
-
-    function parseCSV(text) {
-        const linhas = [];
-        let linhaAtual = '';
-        let dentroAspas = false;
-
-        for (let i = 0; i < text.length; i++) {
-            const char = text[i];
-            const nextChar = text[i + 1];
-
-            if (char === '"') {
-                if (dentroAspas && nextChar === '"') {
-                    linhaAtual += '"';
-                    i++;
-                } else {
-                    dentroAspas = !dentroAspas;
-                    linhaAtual += char;
-                }
-            } else if ((char === '\n' || char === '\r') && !dentroAspas) {
-                if (linhaAtual.trim()) {
-                    linhas.push(parseCSVLine(linhaAtual));
-                }
-                linhaAtual = '';
-                if (char === '\r' && nextChar === '\n') i++;
-            } else {
-                linhaAtual += char;
-            }
-        }
-        if (linhaAtual.trim()) {
-            linhas.push(parseCSVLine(linhaAtual));
-        }
-        return linhas;
-    }
-
-    // --- Carga Inicial de Dados ---
     async function carregarDados() {
         try {
-            const [respCSV, respTSV] = await Promise.all([
-                fetch(CSV_URL, { cache: 'no-store' }),
-                fetch(TSV_PSP_URL, { cache: 'no-store' })
-            ]);
+            const resp = await fetch(TSV_URL);
+            const text = await resp.text();
+            const linhas = text.split(/\r?\n/);
+            const cabecalho = linhas[0].split('\t').map(c => c.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""));
 
-            if (!respCSV.ok || !respTSV.ok) {
-                throw new Error(`Falha HTTP ao carregar os dados.`);
-            }
+            baseDados = linhas.slice(1).map(linha => {
+                const col = linha.split('\t');
+                return {
+                    tema: col[cabecalho.indexOf('tema')] || 'Geral',
+                    modulo: col[cabecalho.indexOf('modulo')] || 'PSP',
+                    pergunta: col[cabecalho.indexOf('pergunta')],
+                    opcoes: { A: col[cabecalho.indexOf('opcaoa')], B: col[cabecalho.indexOf('opcaob')], C: col[cabecalho.indexOf('opcaoc')], D: col[cabecalho.indexOf('opcaod')] },
+                    resposta: (col[cabecalho.indexOf('resposta')] || '').trim().toUpperCase(),
+                    obs: col[cabecalho.indexOf('observacao')] || ''
+                };
+            }).filter(p => p.pergunta);
 
-            const csvText = await respCSV.text();
-            const tsvText = await respTSV.text();
-
-            processarDadosModulos(csvText);
-            processarDadosPSP(tsvText);
-
-            if (!todasPerguntasModulos.length && !perguntasExamePSP.length) {
-                throw new Error('Não foram encontradas perguntas nas bases de dados.');
-            }
-
-            renderizarMenu();
-        } catch (erro) {
-            console.error(erro);
-            document.getElementById('loader').innerHTML = `
-                ⚠️ <b>Erro de acesso aos dados</b><br><br>
-                Verifique os links publicados.<br><br>
-                <span style="font-size: 0.95rem; color: #64748b;">Detalhe técnico: ${erro.message}</span>
-            `;
+            document.getElementById('loader').classList.add('escondido');
+            document.getElementById('menu-inicial').classList.remove('escondido');
+        } catch (e) {
+            document.getElementById('loader').innerText = "Erro ao carregar dados. Verifique a ligação.";
         }
     }
 
-    function processarDadosModulos(text) {
-        const linhas = parseCSV(text);
-        if (linhas.length < 2) return;
-
-        const cabecalho = linhas[0].map(c => c.trim().toLowerCase());
-        const idxModulo = cabecalho.indexOf('módulo') !== -1 ? cabecalho.indexOf('módulo') : cabecalho.indexOf('modulo');
-        const idxOrigem = cabecalho.indexOf('origem');
-        const idxPergunta = cabecalho.indexOf('pergunta');
-        const idxResposta = cabecalho.indexOf('resposta');
-        const idxObs = cabecalho.indexOf('observação') !== -1 ? cabecalho.indexOf('observação') : cabecalho.indexOf('observacao');
-
-        todasPerguntasModulos = linhas.slice(1).map(colunas => ({
-            isExamePSP: false,
-            modulo: (colunas[idxModulo] || '').trim(),
-            origem: (colunas[idxOrigem] || '').trim(),
-            pergunta: (colunas[idxPergunta] || '').trim(),
-            resposta: (colunas[idxResposta] || '').trim(),
-            obs: idxObs !== -1 ? (colunas[idxObs] || '').trim() : ''
-        })).filter(p => p.modulo && p.pergunta && p.resposta);
-    }
-
-    function processarDadosPSP(text) {
-        // O TSV é dividido por quebras de linha e separadores de tabulação (\t)
-        const linhas = text.split(/\r?\n/);
-        if (linhas.length < 2) return;
-
-        // Limpeza dos cabeçalhos removendo acentos para indexar corretamente
-        const cabecalho = linhas[0].split('\t').map(c => c.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""));
-        
-        const idxTema = cabecalho.indexOf('tema');
-        const idxVariante = cabecalho.indexOf('variante');
-        const idxModulo = cabecalho.indexOf('modulo');
-        const idxTipo = cabecalho.indexOf('tipo');
-        const idxPergunta = cabecalho.indexOf('pergunta');
-        const idxOpA = cabecalho.indexOf('opcaoa');
-        const idxOpB = cabecalho.indexOf('opcaob');
-        const idxOpC = cabecalho.indexOf('opcaoc');
-        const idxOpD = cabecalho.indexOf('opcaod');
-        const idxResposta = cabecalho.indexOf('resposta');
-        const idxObs = cabecalho.indexOf('observacao');
-
-        perguntasExamePSP = linhas.slice(1).map(linha => {
-            const colunas = linha.split('\t');
-            if (colunas.length < 5) return null;
-
-            return {
-                isExamePSP: true,
-                tema: idxTema !== -1 ? (colunas[idxTema] || '').trim() : '',
-                modulo: idxModulo !== -1 ? (colunas[idxModulo] || '').trim() : 'PSP',
-                pergunta: idxPergunta !== -1 ? (colunas[idxPergunta] || '').trim() : '',
-                opcoes: {
-                    A: idxOpA !== -1 ? (colunas[idxOpA] || '').trim() : '',
-                    B: idxOpB !== -1 ? (colunas[idxOpB] || '').trim() : '',
-                    C: idxOpC !== -1 ? (colunas[idxOpC] || '').trim() : '',
-                    D: idxOpD !== -1 ? (colunas[idxOpD] || '').trim() : ''
-                },
-                resposta: idxResposta !== -1 ? (colunas[idxResposta] || '').trim() : '',
-                obs: idxObs !== -1 ? (colunas[idxObs] || '').trim() : ''
-            };
-        }).filter(p => p && p.pergunta && p.resposta);
-    }
-
-    // --- Helpers de Ordenação e Aleatoriedade ---
-    function ordenarModulos(lista) {
-        return lista.sort((a, b) => {
-            const ma = a.match(/(\D+)\s*(\d+)/);
-            const mb = b.match(/(\D+)\s*(\d+)/);
-            if (!ma || !mb) return a.localeCompare(b, 'pt');
-            if (ma[1].trim() !== mb[1].trim()) return ma[1].trim().localeCompare(mb[1].trim(), 'pt');
-            return parseInt(ma[2], 10) - parseInt(mb[2], 10);
+    function gerarExamePSP() {
+        // Lógica: Agrupar por tema e escolher uma pergunta aleatória de cada um (até 20)
+        const temasMap = {};
+        baseDados.forEach(p => {
+            if (!temasMap[p.tema]) temasMap[p.tema] = [];
+            temasMap[p.tema].push(p);
         });
-    }
 
-    function baralhar(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
-        }
-        return array;
-    }
-
-    function limitarAleatorias(lista, limite) {
-        const copia = [...lista];
-        return baralhar(copia).slice(0, Math.min(limite, copia.length));
-    }
-
-    // --- Construção do Menu ---
-    function criarBotoes(modulos, elementoId) {
-        const container = document.getElementById(elementoId);
-        container.innerHTML = '';
-        modulos.forEach(m => {
-            const btn = document.createElement('button');
-            btn.className = 'btn-modulo';
-            btn.innerText = `${m} (${Math.min(LIMITE_MODULO, todasPerguntasModulos.filter(p => p.modulo === m).length)})`;
-            btn.onclick = () => iniciarQuiz(m);
-            container.appendChild(btn);
+        const temasDisponiveis = Object.keys(temasMap).sort(() => Math.random() - 0.5);
+        perguntasExame = temasDisponiveis.slice(0, 20).map(t => {
+            const lista = temasMap[t];
+            return lista[Math.floor(Math.random() * lista.length)];
         });
+
+        iniciar();
     }
 
-    function renderizarMenu() {
-        const modulos = [...new Set(todasPerguntasModulos.map(p => p.modulo))];
-        const bas = ordenarModulos(modulos.filter(m => m.startsWith('BAS')));
-        const vig = ordenarModulos(modulos.filter(m => m.startsWith('VIG')));
-        const alm = ordenarModulos(modulos.filter(m => m.startsWith('ALM')));
-
-        criarBotoes(bas, 'lista-bas');
-        criarBotoes(vig, 'lista-vig');
-        criarBotoes(alm, 'lista-alm');
-
-        document.getElementById('loader').classList.add('escondido');
-        document.getElementById('menu-selecao').classList.remove('escondido');
-    }
-
-    // --- Lógica do Quiz ---
-    function iniciarExamePSP() {
-        perguntasAtuais = limitarAleatorias(perguntasExamePSP, LIMITE_EXAME_PSP);
-        prepararEcraQuiz();
-    }
-
-    function iniciarQuiz(tipo) {
-        if (tipo === 'TOTAL') {
-            perguntasAtuais = limitarAleatorias(todasPerguntasModulos, LIMITE_TOTAL);
-        } else if (tipo === 'GRUPO_BAS') {
-            perguntasAtuais = limitarAleatorias(todasPerguntasModulos.filter(p => p.modulo.startsWith('BAS')), LIMITE_GRUPO);
-        } else if (tipo === 'GRUPO_VIG') {
-            perguntasAtuais = limitarAleatorias(todasPerguntasModulos.filter(p => p.modulo.startsWith('VIG')), LIMITE_GRUPO);
-        } else if (tipo === 'GRUPO_ALM') {
-            perguntasAtuais = limitarAleatorias(todasPerguntasModulos.filter(p => p.modulo.startsWith('ALM')), LIMITE_GRUPO);
-        } else {
-            perguntasAtuais = limitarAleatorias(todasPerguntasModulos.filter(p => p.modulo === tipo), LIMITE_MODULO);
-        }
-        prepararEcraQuiz();
-    }
-
-    function prepararEcraQuiz() {
-        index = 0;
-        score = 0;
-        document.getElementById('menu-selecao').classList.add('escondido');
-        document.getElementById('ecra-resultado').classList.add('escondido');
+    function iniciar() {
+        index = 0; acertos = 0; historicoRespostas = [];
+        document.getElementById('menu-inicial').classList.add('escondido');
         document.getElementById('ecra-quiz').classList.remove('escondido');
-        mostrar();
+        mostrarPergunta();
     }
 
-    function mostrar() {
-        const p = perguntasAtuais[index];
-
-        // Atualizar Textos de Topo
-        document.getElementById('txt-modulo').innerText = p.isExamePSP ? 'EXAME FINAL PSP' : 'Módulo: ' + p.modulo;
-        document.getElementById('txt-progresso').innerText = (index + 1) + ' / ' + perguntasAtuais.length;
-        
-        // Atualizar Etiquetas
-        const eqModulo = document.getElementById('etiqueta-modulo');
-        const eqOrigem = document.getElementById('etiqueta-origem');
-        
-        if(p.isExamePSP) {
-            eqModulo.innerText = 'PSP';
-            eqModulo.className = 'etiqueta etiqueta-psp';
-            eqOrigem.innerText = p.tema || p.modulo;
-        } else {
-            eqModulo.innerText = p.modulo;
-            eqModulo.className = 'etiqueta etiqueta-modulo';
-            eqOrigem.innerText = p.origem;
-        }
-
-        // Pergunta
+    function mostrarPergunta() {
+        const p = perguntasExame[index];
+        document.getElementById('txt-tema').innerText = `Tema: ${p.tema} (${p.modulo})`;
+        document.getElementById('txt-progresso').innerText = `Questão ${index + 1} de ${perguntasExame.length}`;
         document.getElementById('txt-pergunta').innerText = p.pergunta;
+        
+        const container = document.getElementById('container-opcoes');
+        container.innerHTML = '';
+        
+        ['A', 'B', 'C', 'D'].forEach(letra => {
+            if (p.opcoes[letra]) {
+                const btn = document.createElement('button');
+                btn.className = 'btn-opcao';
+                btn.innerHTML = `<strong>${letra})</strong> ${p.opcoes[letra]}`;
+                btn.onclick = () => verificar(letra);
+                container.appendChild(btn);
+            }
+        });
 
-        // Renderizar Opções Dinamicamente (Escolha Múltipla ou V/F)
-        const containerOpcoes = document.getElementById('container-opcoes');
-        containerOpcoes.innerHTML = '';
-
-        const temOpcoesMultiplas = p.opcoes && (p.opcoes.A || p.opcoes.B);
-
-        if (p.isExamePSP && temOpcoesMultiplas) {
-            containerOpcoes.className = 'opcoes-multiplas';
-            const letras = ['A', 'B', 'C', 'D'];
-            
-            letras.forEach(letra => {
-                if (p.opcoes[letra]) {
-                    const btn = document.createElement('button');
-                    btn.className = 'btn-opcao-multipla';
-                    // Renderiza "A) Texto da opção"
-                    btn.innerHTML = `<strong>${letra})</strong> ${p.opcoes[letra]}`;
-                    btn.onclick = () => verificar(letra);
-                    containerOpcoes.appendChild(btn);
-                }
-            });
-        } else {
-            // Renderiza formato Verdadeiro / Falso tradicional
-            containerOpcoes.className = 'opcoes-vf';
-            
-            const btnV = document.createElement('button');
-            btnV.className = 'btn-opcao-vf';
-            btnV.innerText = 'VERDADEIRO';
-            btnV.onclick = () => verificar('Verdadeiro');
-
-            const btnF = document.createElement('button');
-            btnF.className = 'btn-opcao-vf';
-            btnF.innerText = 'FALSO';
-            btnF.onclick = () => verificar('Falso');
-
-            containerOpcoes.appendChild(btnV);
-            containerOpcoes.appendChild(btnF);
-        }
-
-        // Resetar Feedback
-        const fb = document.getElementById('caixa-feedback');
-        fb.style.display = 'none';
-        fb.innerHTML = '';
-        fb.className = 'feedback';
-
+        document.getElementById('caixa-feedback').style.display = 'none';
         document.getElementById('btn-proxima').classList.add('escondido');
     }
 
     function verificar(escolha) {
-        const p = perguntasAtuais[index];
+        const p = perguntasExame[index];
+        const correta = escolha === p.resposta;
+        if (correta) acertos++;
+
+        historicoRespostas.push({ 
+            pergunta: p.pergunta, 
+            modulo: p.modulo,
+            escolha: escolha, 
+            correta: p.resposta, 
+            obs: p.obs,
+            textoEscolha: p.opcoes[escolha],
+            textoCorreta: p.opcoes[p.resposta],
+            status: correta
+        });
+
         const fb = document.getElementById('caixa-feedback');
-        
-        let correta = false;
-        
-        // Verifica se a escolha corresponde à Resposta (Ignora maiúsculas/minúsculas e espaços)
-        if (p.isExamePSP && p.opcoes && p.opcoes.A) {
-            correta = escolha.trim().toUpperCase() === String(p.resposta).trim().toUpperCase();
-        } else {
-            correta = escolha.trim().toLowerCase() === String(p.resposta).trim().toLowerCase();
-        }
-
-        if (correta) score++;
-
-        // Desativar botões
-        const botoes = document.querySelectorAll('#container-opcoes button');
-        botoes.forEach(b => b.disabled = true);
-
-        // Highlight no caso de múltipla escolha
-        if (p.isExamePSP && p.opcoes && p.opcoes.A) {
-             const respostaCerta = String(p.resposta).trim().toUpperCase();
-             botoes.forEach(b => {
-                 if (b.innerHTML.includes(`<strong>${respostaCerta})</strong>`)) {
-                     b.style.borderColor = 'var(--sucesso)';
-                     b.style.backgroundColor = '#dcfce7';
-                 } else if (b.innerHTML.includes(`<strong>${escolha}</strong>`) && !correta) {
-                     b.style.borderColor = 'var(--erro)';
-                     b.style.backgroundColor = '#fee2e2';
-                 }
-             });
-        }
-
-        // Preparar texto da resposta certa para mostrar no feedback
-        let txtRespostaCerta = p.resposta;
-        if (p.isExamePSP && p.opcoes && p.opcoes[String(p.resposta).toUpperCase()]) {
-             txtRespostaCerta = `${String(p.resposta).toUpperCase()}) ${p.opcoes[String(p.resposta).toUpperCase()]}`;
-        }
-
-        // Mostrar Feedback
         fb.style.display = 'block';
         fb.className = `feedback ${correta ? 'correto' : 'errado'}`;
-        fb.innerHTML = `
-            <b>${correta ? '✓ CERTO' : '✗ ERRADO'}</b><br>
-            <b>${p.isExamePSP ? 'Tema/Módulo:' : 'Origem:'}</b> ${p.isExamePSP ? (p.tema || p.modulo) : p.origem}<br>
-            <b>Resposta correta:</b> ${txtRespostaCerta}<br>
-            ${p.obs ? `<br><span style="color:#475569; font-size:0.95rem;"><b>Nota:</b> ${p.obs}</span>` : ''}
-        `;
+        fb.innerHTML = `<b>${correta ? '✓ ACERTOU' : '✗ ERROU'}</b><br>
+                        <b>Resposta Correta:</b> ${p.resposta}) ${p.opcoes[p.resposta]}<br>
+                        ${p.obs ? `<small><i>${p.obs}</i></small>` : ''}`;
 
+        document.querySelectorAll('.btn-opcao').forEach(b => b.disabled = true);
         document.getElementById('btn-proxima').classList.remove('escondido');
     }
 
     function proxima() {
         index++;
-        if (index < perguntasAtuais.length) {
-            mostrar();
-        } else {
-            document.getElementById('ecra-quiz').classList.add('escondido');
-            document.getElementById('ecra-resultado').classList.remove('escondido');
-
-            const percentagem = Math.round((score / perguntasAtuais.length) * 100);
-            document.getElementById('percentagem').innerText = percentagem + '%';
-            document.getElementById('resumo-final').innerText = `Acertos: ${score} em ${perguntasAtuais.length}`;
-        }
+        if (index < perguntasExame.length) mostrarPergunta();
+        else finalizar();
     }
 
-    function voltarMenu() {
+    function finalizar() {
         document.getElementById('ecra-quiz').classList.add('escondido');
-        document.getElementById('ecra-resultado').classList.add('escondido');
-        document.getElementById('menu-selecao').classList.remove('escondido');
+        document.getElementById('ecra-resultado').classList.remove('escondido');
+        
+        const total = perguntasExame.length;
+        const perc = Math.round((acertos / total) * 100);
+        const erros = total - acertos;
+
+        document.getElementById('score-percent').innerText = `${perc}%`;
+        document.getElementById('resumo-stats').innerText = `Perguntas: ${total} | Acertos: ${acertos} | Erros: ${erros}`;
+
+        let classe = "";
+        if (perc >= 90) classe = "Excelente! 🌟";
+        else if (perc >= 75) classe = "Muito Bom! 👍";
+        else if (perc >= 50) classe = "Suficiente ⚖️";
+        else classe = "Precisa de Reforço 📚";
+        
+        document.getElementById('txt-classificacao').innerText = classe;
+
+        if (erros > 0) document.getElementById('btn-ver-erros').classList.remove('escondido');
+    }
+
+    function mostrarRevisao() {
+        const lista = document.getElementById('lista-erros');
+        lista.innerHTML = '';
+        historicoRespostas.forEach((h, i) => {
+            if (!h.status) {
+                const div = document.createElement('div');
+                div.className = 'item-revisao';
+                div.innerHTML = `
+                    <b>Questão ${i + 1} [${h.modulo}]</b><br>
+                    <p>${h.pergunta}</p>
+                    <span style="color:var(--erro)">Sua resposta: ${h.escolha}) ${h.textoEscolha}</span><br>
+                    <span style="color:var(--sucesso)">Resposta certa: ${h.correta}) ${h.textoCorreta}</span><br>
+                    <p style="margin-top:8px; font-size:0.9rem; background:#f1f5f9; padding:10px; border-radius:5px;">
+                        <b>OBS:</b> ${h.obs || 'Sem observações adicionais.'}
+                    </p>
+                `;
+                lista.appendChild(div);
+            }
+        });
+        document.getElementById('zona-revisao').classList.remove('escondido');
+        window.scrollTo(0, document.body.scrollHeight);
     }
 
     window.onload = carregarDados;
 </script>
-
 </body>
 </html>
